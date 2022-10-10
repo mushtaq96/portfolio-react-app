@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/portfolio-react-app/static/css/main.78a7bb1f.css",
+    "main.js": "/portfolio-react-app/static/js/main.b269cf7a.js",
+    "static/media/opensea.png": "/portfolio-react-app/static/media/opensea.1710d55eefd998dcd593.png",
+    "static/media/realestate.jpg": "/portfolio-react-app/static/media/realestate.44fd19f4c6872731149c.jpg",
+    "static/media/covid.png": "/portfolio-react-app/static/media/covid.123dd1ec2ad4775e862f.png",
+    "static/media/movie.png": "/portfolio-react-app/static/media/movie.cf062d754ba4ebdb8ee1.png",
+    "static/media/workImg.jpeg": "/portfolio-react-app/static/media/workImg.e4c66be6ae2ae4f83608.jpeg",
+    "static/media/react.png": "/portfolio-react-app/static/media/react.0cf951a69d8e58f83f9d.png",
+    "static/media/comments.png": "/portfolio-react-app/static/media/comments.3a655f1753d3c700696e.png",
+    "static/media/node.png": "/portfolio-react-app/static/media/node.952a9ea986dcfa5229ad.png",
+    "static/media/html.png": "/portfolio-react-app/static/media/html.2ba4fabc69a89a8f71e6.png",
+    "static/media/tailwind.png": "/portfolio-react-app/static/media/tailwind.e47ac876b8d4d0bba47a.png",
+    "static/media/css.png": "/portfolio-react-app/static/media/css.69a82c2d9e45c933a9cb.png",
+    "static/media/javascript.png": "/portfolio-react-app/static/media/javascript.1ccd6ef9bb1f9c84ef00.png",
+    "index.html": "/portfolio-react-app/index.html",
+    "main.78a7bb1f.css.map": "/portfolio-react-app/static/css/main.78a7bb1f.css.map",
+    "main.b269cf7a.js.map": "/portfolio-react-app/static/js/main.b269cf7a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.78a7bb1f.css",
+    "static/js/main.b269cf7a.js"
+  ]
+}
