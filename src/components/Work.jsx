@@ -24,7 +24,7 @@ const Work = () => {
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
 
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 NFT Marketplace (React Js)
                             </span>
@@ -45,7 +45,7 @@ const Work = () => {
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
 
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Covid Tracker (React Js)
                             </span>
@@ -66,7 +66,7 @@ const Work = () => {
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
 
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Source Code (Python)
                             </span>
@@ -87,7 +87,7 @@ const Work = () => {
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
 
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Movie Database(React JS)
                             </span>
