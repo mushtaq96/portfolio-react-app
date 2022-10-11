@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import Logo from '../assets/logo1.png'
-import {FaBars, FaTimes, FaGithub, FaLinkedin, FaFacebook} from 'react-icons/fa'
+import {FaBars, FaTimes, FaGithub, FaLinkedin} from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 import {BsFillPersonLinesFill} from 'react-icons/bs'
 import {Link} from 'react-scroll'
@@ -13,7 +13,7 @@ const Navbar = () =>{
         <div className='fixed w-full h-[80px] flex justify-between items-center px-4 bg-[#0a192f] text-gray-300'>
             <div className='cursor-pointer'>   
                 <Link to="home" smooth={true} duration={500}>
-                    <img src={Logo} alt="Logo Image" style={{width:'50px', borderRadius: '10px'}}/>
+                    <img src={Logo} alt="Logo" style={{width:'50px', borderRadius: '10px'}}/>
                 </Link>
             </div>
 
@@ -87,22 +87,22 @@ const Navbar = () =>{
             <div className='hidden lg:flex fixed flex-col top-[35%] left-0'>
                 <ul>
                     <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-blue-600'>
-                        <a className='flex justify-between items-center w-full text-gray-300' href="https://www.linkedin.com/in/mushtaq96/" target='_blank'>
+                        <a className='flex justify-between items-center w-full text-gray-300' href="https://www.linkedin.com/in/mushtaq96/" target='_blank' rel="noopener noreferrer">
                             LinkedIn <FaLinkedin size={30}/>
                         </a>
                     </li>
                     <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-[#33333]'>
-                        <a className='flex justify-between items-center w-full text-gray-300' href="/https://github.com/mushtaq96" target='_blank'>
+                        <a className='flex justify-between items-center w-full text-gray-300' href="/https://github.com/mushtaq96" target='_blank' rel="noopener noreferrer">
                             Github <FaGithub size={30}/>
                         </a>
                     </li>
                     <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-green-900'>
-                        <a className='flex justify-between items-center w-full text-gray-300' href="/">
+                        <a className='flex justify-between items-center w-full text-gray-300' href="mailto:mushtaq96smb@gmail.com?subject=Important!&body=Hi.">
                             Email <HiOutlineMail size={30}/>
                         </a>
                     </li>
                     <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-gray-500'>
-                        <a className='flex justify-between items-center w-full text-gray-300' href="/">
+                        <a className='flex justify-between items-center w-full text-gray-300' href="https://drive.google.com/file/d/1YFpYQfXJki79ayEcpK56zSYBp4Ru4v4t/view?usp=sharing" target='_blank' rel="noopener noreferrer">
                             Resume <BsFillPersonLinesFill size={30}/>
                         </a>
                     </li>
