@@ -1,0 +1,26 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- script: |
+    npm install -g yarn
+  displayName: 'Install yarn'
+
+- script: |
+    yarn install
+  displayName: 'Install dependencies'
+
+- script: |
+    yarn build
+  displayName: 'Build react code'
