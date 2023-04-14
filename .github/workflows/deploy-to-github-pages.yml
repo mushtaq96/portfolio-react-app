@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  CI: false # true treats warnings as errors
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
