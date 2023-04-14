@@ -29,10 +29,10 @@ const Work = () => {
                                 NFT Marketplace (React Js)
                             </span>
                             <div className='pt-8 text-center'>
-                                <a href="https://opensea-production.vercel.app/" target="_blank">
+                                <a href="https://opensea-production.vercel.app/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
-                                <a href="https://github.com/mushtaq96/opensea-blockchain-clone" target="_blank">
+                                <a href="https://github.com/mushtaq96/opensea-blockchain-clone" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Code</button>
                                 </a>
                             </div>
@@ -50,10 +50,10 @@ const Work = () => {
                                 Covid Tracker (React Js)
                             </span>
                             <div className='pt-8 text-center'>
-                                <a href="https://my-coronatracker.herokuapp.com/" target="_blank">
+                                <a href="https://my-coronatracker.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
-                                <a href="https://github.com/mushtaq96/corona-tracker" target="_blank">
+                                <a href="https://github.com/mushtaq96/corona-tracker" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Code</button>
                                 </a>
                             </div>
@@ -71,10 +71,10 @@ const Work = () => {
                                 Source Code (Python)
                             </span>
                             <div className='pt-8 text-center'>
-                                <a href="https://cryptic-refuge-46980.herokuapp.com/" target="_blank">
+                                <a href="https://cryptic-refuge-46980.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
-                                <a href="https://github.com/mushtaq96/source-comments" target="_blank">
+                                <a href="https://github.com/mushtaq96/source-comments" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Code</button>
                                 </a>
                             </div>
@@ -92,10 +92,10 @@ const Work = () => {
                                 Movie Database(React JS)
                             </span>
                             <div className='pt-8 text-center'>
-                                <a href="https://my-movie-search-webapp.herokuapp.com/" target="_blank">
+                                <a href="https://my-movie-search-webapp.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
-                                <a href="https://github.com/mushtaq96/my-movie-search-webapp" target="_blank">
+                                <a href="https://github.com/mushtaq96/my-movie-search-webapp" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Code</button>
                                 </a>
                             </div>
