@@ -35,6 +35,9 @@ jobs:
           git config --global user.name "mushtaq96"
 
       - name: Deploy to GitHub Pages
-        run: yarn run deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: static
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
