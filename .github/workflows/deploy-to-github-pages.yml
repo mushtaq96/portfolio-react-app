@@ -29,7 +29,7 @@ jobs:
 
       - name: Set up authentication
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.email "mushtaq96smb@gmail.com"
           git config --global user.name "mushtaq96"
@@ -37,4 +37,4 @@ jobs:
       - name: Deploy to GitHub Pages
         run: yarn deploy
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
