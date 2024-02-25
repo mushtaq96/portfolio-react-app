@@ -9,6 +9,11 @@ import Tailwind from '../assets/tailwind.png';
 import Python from '../assets/python.png';
 import Mongo from '../assets/tailwind.png';
 import MySQL from '../assets/mysql.png';
+import Pytorch from '../assets/pytorch.svg';
+import Git from '../assets/github.svg';
+import Docker from '../assets/docker.svg';
+import Kubernetes from '../assets/kubernetes.svg';
+import MicrosoftAzure from '../assets/azure.svg';
 
 const Skills = () =>{
     return (
@@ -21,6 +26,36 @@ const Skills = () =>{
                 </div>
 
                 <div className='w-full grid grid-cols-2 sm:grid-cols-4 gap-4 text-center py-8'>
+
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={Python} alt="Python icon"/>
+                        <p className='my-4'>Python</p>
+                    </div>
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={Pytorch} alt="Pytorch icon"/>
+                        <p className='my-4'>Pytorch</p>
+                    </div>
+                   
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={MicrosoftAzure} alt="MicrosoftAzure icon"/>
+                        <p className='my-4'>Microsoft Azure</p>
+                    </div>
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={Kubernetes} alt="Kubernetes icon"/>
+                        <p className='my-4'>Kubernetes</p>
+                    </div>
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={Docker} alt="Docker icon"/>
+                        <p className='my-4'>Docker</p>
+                    </div>
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={Mongo} alt="Mongo icon"/>
+                        <p className='my-4'>Mongo Db</p>
+                    </div>
+                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
+                        <img className='w-20 mx-auto' src={MySQL} alt="MySQL icon"/>
+                        <p className='my-4'>MySQL</p>
+                    </div>
                     <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
                         <img className='w-20 mx-auto' src={HTML} alt="HTML icon"/>
                         <p className='my-4'>HTML</p>
@@ -41,18 +76,9 @@ const Skills = () =>{
                         <img className='w-20 mx-auto' src={Node} alt="Node icon"/>
                         <p className='my-4'>NodeJs</p>
                     </div>
-                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
-                        <img className='w-20 mx-auto' src={Python} alt="Python icon"/>
-                        <p className='my-4'>Python</p>
-                    </div>
-                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
-                        <img className='w-20 mx-auto' src={Mongo} alt="Mongo icon"/>
-                        <p className='my-4'>Mongo Db</p>
-                    </div>
-                    <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
-                        <img className='w-20 mx-auto' src={MySQL} alt="MySQL icon"/>
-                        <p className='my-4'>MySQL</p>
-                    </div>
+                   
+              
+
                 </div>
                 
             </div>
