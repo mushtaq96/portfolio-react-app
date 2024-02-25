@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import profileImage from '../assets/profile.jpg'; // Import your profile picture
 
 const About = () => {
     return (
@@ -10,14 +11,11 @@ const About = () => {
                             About
                         </p>
                     </div>
-                    <div>
-
-                    </div>
+                   
                 </div>
-
-                <div className='max-w-[1000px] w-full grid sm:grid-cols-2 gap-8 px-4'>
+                <div className='max-w-[1000px] w-full grid grid-cols-1 sm:grid-cols-2 gap-8 px-4'>
                     <div className='sm:text-right text-4xl font-bold'>
-                       
+                        <img src={profileImage} alt='Profile' className='w-48 h-48 rounded-full mb-4 ml-auto object-contain' />
                         <p>Born in India</p>
                         <p>Worked in Japan</p>
                         <p>Studying in Germany</p>
@@ -25,20 +23,16 @@ const About = () => {
                         <p className='text-xl font-normal'>Thanks for visiting, please take a look around</p>
                     </div>
                     <div>
-                        <p>Am a keen observer and enjoy figuring out how things work. </p>
-                        <p>Enjoy making insightful, engaging and functional web apps with a clean, simple and distinctive designs.</p>
-                        <br></br>
-                        <p>In my previous work experiences I have donned the roles of a .Net/C# Dev, Backend Dev and Junior Full-Stack Dev. </p>
-                        <p>In my personal time I am involved with technologies such as Javascript/Typescript, Python, React and more.</p>
-                        <br></br>
-                        <p>I am also an active participant in the web3 space.</p>
-                        <p>Love to be involved in volunteering activities which help me broaden my perspective of things either of my domain or from different domains.
-                        </p>
+                        <p>I'm a skilled AI/Machine Learning Engineer with a proven track record in crafting insightful, engaging, and functional web applications.</p>
+                        <br />
+                        <p> Drawing on my experience as a Backend Developer, Deep Learning Engineer and Full-Stack Developer, I bring a keen observer's mindset to unravel the intricacies of how things work. 
+                            In addition to my proficiency in Python, JavaScript/TypeScript, I actively engage with machine learning and artificial intelligence to stay at the forefront of technological innovation.</p>
+                        <br />
+                        <p>Outside of work, I'm a passionate participant in the web3 space and contribute to various open-source projects. I also devote my time to volunteering activities, which broaden my perspective across different domains.</p>
                     </div>
                 </div>
             </div>
         </div>
-
     );
 };
 
