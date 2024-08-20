@@ -21,9 +21,9 @@ const About = () => {
 
                 <div className='max-w-[1000px] w-full grid sm:grid-cols-2 gap-8 px-4'>
                     <div className='sm:text-right text-4xl font-bold'>
-                        <p>Born in India</p>
-                        <p>Worked in Japan</p>
-                        <p>Studying in Germany</p>
+                        <p>Born in <span className='text-red-500'>India</span></p>
+                        <p>Worked in <span className='text-red-500'>Japan</span></p>
+                        <p>Studying in <span className='text-red-500'>Germany</span></p>
                         <p>Hello there, I am Mushtaq</p>
                         <p className='text-xl font-normal'>Thanks for visiting, please take a look around</p>
                     </div>
