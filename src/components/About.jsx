@@ -3,7 +3,7 @@ import profileImage from '../assets/profile.jpg'; // Import your profile picture
 
 const About = () => {
     return (
-        <div name='about' className='w-full sm:h-screen p-2 bg-[#0a192f] text-gray-300'>
+        <div name='about' className='w-full min-h-screen p-2 bg-[#0a192f] text-gray-300'>
             <div className='flex flex-col justify-center items-center w-full h-full'>
                 <div className='max-w-[1000px] w-full grid grid-cols-2 gap-8'>
                     <div className='flex flex-col justify-center'>
