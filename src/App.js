@@ -9,13 +9,15 @@ import Work from "./components/Work";
 function App() {
   return (
     <div className="App">
-      <Navbar/>
-      <Home/>
-      <About/>
-      <Skills/>
-      <Work/>
-      <Contact/>
-    </div>
+      <Navbar />
+      <div className="sm:pt-20 md:pt-0 lg:pt-0">
+        <Home />
+        <About />
+        <Skills />
+        <Work />
+        <Contact />
+      </div>
+    </div >
   );
 }
 
