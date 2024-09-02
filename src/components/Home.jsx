@@ -7,9 +7,9 @@ const Home = () => {
         <div name='home' className='w-full h-screen bg-[#0a192f]'>
 
             {/* Container */}
-            <div className='max-w-[1000px] mx-auto px-8 flex flex-col justify-center h-full'>
-                <p className='#16e0bd text-red-500'> Hi, my name is </p>
-                <h1 className='text-4xl sm:text-7xl font-bold text-[#bbc4e2]'>SM Mushtaq Bokhari.</h1>
+            <div className='max-w-[1000px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-center h-full'>
+                <p className='text-red-500'> Hi, my name is </p>
+                <h1 className='text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#bbc4e2]'>SM Mushtaq Bokhari.</h1>
                 <h2 className='text-3xl sm:text-5xl font-bold text-[#8892b0]'>I craft solutions for the AI &lt;<span className='text-red-500'>world</span>/&gt;.</h2>
                 <p className ='text-[#8892b0] py-4 max-w-[700px]'>
                     I am a Software Developer who is curious by nature, empathy minded, passionate about leveraging technology to solve real-world problems. 
