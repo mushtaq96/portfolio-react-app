@@ -101,11 +101,11 @@ const Navbar = () =>{
                             Email <HiOutlineMail size={30}/>
                         </a>
                     </li>
-                    <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-gray-500'>
+                    {/* <li className='w-[160px] h-[60px] flex justify-between items-center ml-[-100px] hover:ml-[-10px] duration-300 bg-gray-500'>
                         <a className='flex justify-between items-center w-full text-gray-300' href="https://drive.google.com/file/d/1YFpYQfXJki79ayEcpK56zSYBp4Ru4v4t/view?usp=sharing" target='_blank' rel="noopener noreferrer">
                             Resume <BsFillPersonLinesFill size={30}/>
                         </a>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
         </div>
