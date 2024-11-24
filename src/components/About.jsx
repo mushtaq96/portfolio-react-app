@@ -31,7 +31,7 @@ const About = () => {
                         <p>I'm a skilled Software Developer with a proven track record in crafting insightful, engaging, and functional web applications. My background in AI/ML complements my software engineering skills, allowing me to integrate machine learning models into web applications.</p>
                         <br />
                         <p> Drawing on my experience as a Backend Developer, Deep Learning Engineer and Full-Stack Developer, I bring a keen observer's mindset to unravel the intricacies of how things work. 
-                            In addition to my proficiency in Python, JavaScript/TypeScript, I actively engage with machine learning and artificial intelligence to stay at the forefront of technological innovation.</p>
+                            In addition to my proficiency in C#, Python, TypeScript, I actively engage with machine learning and artificial intelligence to stay at the forefront of technological innovation.</p>
                         <br />
                         <p>Outside of work, I'm a passionate participant in the web3 space and contribute to various open-source projects. I also devote my time to volunteering activities, which broaden my perspective across different domains.</p>
                     </div>
