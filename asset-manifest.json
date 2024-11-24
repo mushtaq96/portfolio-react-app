@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/portfolio-react-app/static/css/main.9ccac199.css",
-    "main.js": "/portfolio-react-app/static/js/main.75589144.js",
+    "main.js": "/portfolio-react-app/static/js/main.24dcbdb2.js",
     "static/media/profile.jpg": "/portfolio-react-app/static/media/profile.04348483c5b3de9045dc.jpg",
     "static/media/opensea.png": "/portfolio-react-app/static/media/opensea.1710d55eefd998dcd593.png",
     "static/media/realestate.jpg": "/portfolio-react-app/static/media/realestate.44fd19f4c6872731149c.jpg",
@@ -20,14 +20,13 @@
     "static/media/javascript.png": "/portfolio-react-app/static/media/javascript.1ccd6ef9bb1f9c84ef00.png",
     "static/media/docker.svg": "/portfolio-react-app/static/media/docker.47a900dbbbbe13dbe7c3171049ec68c8.svg",
     "static/media/azure.svg": "/portfolio-react-app/static/media/azure.1d61f263f8c47bcccfc6982ed4c70e67.svg",
-    "static/media/pytorch.svg": "/portfolio-react-app/static/media/pytorch.d49a0efd709d3e3bc29f286e3e2bf060.svg",
     "index.html": "/portfolio-react-app/index.html",
     "static/media/github.svg": "/portfolio-react-app/static/media/github.cf3c708621b7a00e1d3c9e9782f1fc98.svg",
     "main.9ccac199.css.map": "/portfolio-react-app/static/css/main.9ccac199.css.map",
-    "main.75589144.js.map": "/portfolio-react-app/static/js/main.75589144.js.map"
+    "main.24dcbdb2.js.map": "/portfolio-react-app/static/js/main.24dcbdb2.js.map"
   },
   "entrypoints": [
     "static/css/main.9ccac199.css",
-    "static/js/main.75589144.js"
+    "static/js/main.24dcbdb2.js"
   ]
 }
