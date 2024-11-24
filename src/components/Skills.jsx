@@ -9,7 +9,7 @@ import Tailwind from '../assets/tailwind.png';
 import Python from '../assets/python.png';
 import Mongo from '../assets/tailwind.png';
 import MySQL from '../assets/mysql.png';
-import Pytorch from '../assets/pytorch.svg';
+import CSharp from '../assets/cSharp.png';
 import Git from '../assets/github.svg';
 import Docker from '../assets/docker.svg';
 import Kubernetes from '../assets/kubernetes.svg';
@@ -33,8 +33,8 @@ const Skills = () =>{
                         <p className='my-4'>Python</p>
                     </div>
                     <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
-                        <img className='w-20 mx-auto' src={Pytorch} alt="Pytorch icon"/>
-                        <p className='my-4'>Pytorch</p>
+                        <img className='w-20 mx-auto' src={CSharp} alt="CSharp icon"/>
+                        <p className='my-4'>C#</p>
                     </div>
                    
                     <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
