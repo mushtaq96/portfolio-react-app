@@ -52,7 +52,7 @@ jobs: build-and-deploy: runs-on: ubuntu-latest steps: - name: Checkout uses: act
 - name: Set up Node.js
   uses: actions/setup-node@v2
   with:
-  node-version: 14.x
+  node-version: 16.x
 
 - name: Install dependencies
   run: yarn install
@@ -71,3 +71,7 @@ jobs: build-and-deploy: runs-on: ubuntu-latest steps: - name: Checkout uses: act
 4. Commit and push your changes.
 
 Now, every time you push changes to the `main` branch, your app will be automatically built and deployed to GitHub Pages.
+
+
+
+![project structure](project_structure.png)
