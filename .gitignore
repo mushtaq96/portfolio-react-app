@@ -21,3 +21,24 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Python virtual environments
+backend/.venv/
+venv/
+ENV/
+env/
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Coverage and test output
+htmlcov/
+*.coverage
+*.pyc
+*.pyo
+
+# Logs
+*.log
+
