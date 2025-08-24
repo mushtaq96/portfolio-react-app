@@ -18,7 +18,7 @@ app.add_middleware(
 
 # Load models
 device = "cuda" if torch.cuda.is_available() else "cpu"
-stt_model = whisper.load_model("small").to(device)
+stt_model = None
 
 class ChatInput(BaseModel):
     message: str
@@ -55,5 +55,9 @@ async def process_audio(file: UploadFile):
 @app.on_event("startup")
 async def startup():
     """Initialize services"""
+    global stt_model
+    # Don't load model during tests
+    if not os.getenv("TESTING"):
+        stt_model = whisper.load_model("small").to(device)
     if not os.path.exists("static"):
         os.makedirs("static")
