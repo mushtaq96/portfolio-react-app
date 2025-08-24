@@ -42,3 +42,8 @@ htmlcov/
 # Logs
 *.log
 
+# ChromaDB persistent storage
+backend/.chroma_db/
+
+# Document storage
+backend/.documents/
