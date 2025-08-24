@@ -1,21 +1,13 @@
 import os
 import PyPDF2
-from chromadb import Client, Settings
-from chromadb.utils import embedding_functions
+import chromadb
 
 def initialize_collection():
-    """Initialize ChromaDB collection with embeddings"""
-    embedding_func = embedding_functions.SentenceTransformerEmbeddingFunction(
-        "all-MiniLM-L6-v2"
+    chroma_client = chromadb.PersistentClient(path="./.chroma_db")
+    collection = chroma_client.get_or_create_collection(
+        name="portfolio_docs"
     )
-    client = Client(settings=Settings(
-        persist_directory="./chroma_db",
-        allow_reset=True
-    ))
-    return client.get_or_create_collection(
-        name="portfolio_docs",
-        embedding_function=embedding_func
-    )
+    return collection
 
 def process_pdf(collection, filepath):
     """Process a single PDF file into chunks"""
@@ -31,14 +23,16 @@ def process_pdf(collection, filepath):
         doc_id = os.path.basename(filepath)
         ids = [f"{doc_id}_{i}" for i in range(len(chunks))]
         
-        collection.add(
+        collection.upsert(
             documents=chunks,
             ids=ids
         )
+        print(f"Processing {filepath}, adding {len(chunks)} chunks.")
+
 
 if __name__ == "__main__":
     collection = initialize_collection()
-    for filename in os.listdir("documents"):
+    for filename in os.listdir(".documents"):
         if filename.endswith(".pdf"):
-            process_pdf(collection, f"documents/{filename}")
+            process_pdf(collection, f".documents/{filename}")
     print("Documents processed successfully!")

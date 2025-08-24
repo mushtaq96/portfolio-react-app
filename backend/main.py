@@ -5,6 +5,7 @@ import whisper
 import torch
 import os
 from typing import List, Dict
+from document_processor import initialize_collection, process_pdf
 
 app = FastAPI()
 
@@ -16,14 +17,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load models
-device = "cuda" if torch.cuda.is_available() else "cpu"
-stt_model = None
+collection = None
 
 class ChatInput(BaseModel):
     message: str
     history: List[Dict[str, str]]
     language: str = "en"
+
+@app.post("/api/index-documents")
+async def index_documents():
+    global collection
+    try:
+        # Initialize or get existing collection
+        collection = initialize_collection()
+        documents_path = ".documents"
+        for filename in os.listdir(documents_path):
+            if filename.endswith(".pdf"):
+                process_pdf(collection, f"{documents_path}/{filename}")
+        return {"detail": f"Indexed documents in {documents_path} successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 
 @app.post("/api/chat")
 async def chat(input: ChatInput):
@@ -34,30 +47,3 @@ async def chat(input: ChatInput):
         "response": f"I received your message about: {input.message}",
         "context": ["Example context chunk 1", "Example context chunk 2"]
     }
-
-@app.post("/api/audio/input")
-async def process_audio(file: UploadFile):
-    """Convert speech to text"""
-    try:
-        # Save audio temporarily
-        temp_path = f"static/{file.filename}"
-        with open(temp_path, "wb") as f:
-            f.write(await file.read())
-        
-        # Transcribe
-        result = stt_model.transcribe(temp_path)
-        os.remove(temp_path)
-        
-        return {"text": result["text"]}
-    except Exception as e:
-        raise HTTPException(500, detail=str(e))
-
-@app.on_event("startup")
-async def startup():
-    """Initialize services"""
-    global stt_model
-    # Don't load model during tests
-    if not os.getenv("TESTING"):
-        stt_model = whisper.load_model("small").to(device)
-    if not os.path.exists("static"):
-        os.makedirs("static")
