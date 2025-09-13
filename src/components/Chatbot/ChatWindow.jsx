@@ -78,7 +78,7 @@ const ChatWindow = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           className="flex-1 bg-[#ccd6f6] text-gray-800 rounded-l px-4 py-2 focus:outline-none"
           placeholder="Ask about my experience..."
           disabled={isLoading}
