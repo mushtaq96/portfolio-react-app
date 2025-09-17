@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     if (!audioPlayed){
       const audio = new Audio(BgAudio);
-      audio.volume = 0.8;
+      audio.volume = 0.2;
       audio.loop = true;
       
 
