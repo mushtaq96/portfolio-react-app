@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Home from "./components/Home";
@@ -6,9 +6,39 @@ import Navbar from "./components/Navbar";
 import Skills from "./components/Skills";
 import Work from "./components/Work";
 import ChatWindow from "./components/Chatbot/ChatWindow";
+import BgAudio from './assets/music/intro-theme18-faster.mp3';
 
 function App() {
   const [showChatbot, setShowChatbot] = useState(false);
+  const [audioPlayed, setAudioPlayed] = useState(false);
+
+  useEffect(() => {
+    if (!audioPlayed){
+      const audio = new Audio(BgAudio);
+      audio.volume = 0.8;
+      audio.loop = true;
+      
+
+      // Try to play immediately
+      audio.play()
+      .then(() => {
+        setAudioPlayed(true);
+      })
+      .catch((error => {
+        console.log('Audio play error:', error);
+        // If autoplay fails, wait for user interaction
+        const handleUserInteraction = () => {
+          audio.play().then(() => {
+            setAudioPlayed(true);
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+          });
+        };
+        document.addEventListener('click', handleUserInteraction);
+        document.addEventListener('keydown', handleUserInteraction);
+      }));
+    }
+  }, [audioPlayed]);
 
   return (
     <div className="App">
