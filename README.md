@@ -75,3 +75,20 @@ Now, every time you push changes to the `main` branch, your app will be automati
 
 
 ![project structure](project_structure.png)
+
+
+code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock" .
+
+backend % PYTHONPATH=$(pwd) pytest tests
+
+create .documents folder to store data
+.chroma_db will be the location
+
+
+
+
+Browser Policy Compliance - AutoPlay Music
+Automatically handles all three browser policy scenarios:
+Audio is allowed (plays immediately)
+User has interacted with the site (plays after interaction)
+Site has been allowlisted (plays immediately)
