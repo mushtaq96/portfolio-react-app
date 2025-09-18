@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import VoiceButton from './VoiceButton';
+import {FaFlagUsa, FaFlag} from 'react-icons/fa'; 
 
 // --- 1. Use Environment Variable for API Base URL ---
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
@@ -46,32 +47,21 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         sender: 'bot',
         context: response.data.context
       }]);
+
       // --- Add Text-to-Speech ---
-      if (response.data.response) {
-          // 1. Check for browser support (good practice)
-          if ('speechSynthesis' in window) {
-              // 2. Create a new SpeechSynthesisUtterance object
-              const utterance = new SpeechSynthesisUtterance(response.data.response);
-
-              // 3. (Optional) Configure voice properties
-              utterance.lang = language === 'de' ? 'de-DE' : 'en-US'; // Match input language
-              utterance.volume = 1; // Range: 0 to 1
-              utterance.rate = 1;   // Range: 0.1 to 10
-              utterance.pitch = 1;  // Range: 0 to 2
-
-              // 4. (Optional) Find and set a specific voice
-              // This part can be tricky due to async voice loading, so setting lang is often sufficient for basic needs.
-              const voices = window.speechSynthesis.getVoices();
-              const desiredVoice = voices.find(voice => voice.lang === utterance.lang); // Example: find by language
-              if (desiredVoice) {
-                  utterance.voice = desiredVoice;
-              }
-
-              // 5. Speak the text!
-              window.speechSynthesis.speak(utterance);
-          } else {
-              console.warn("Text-to-Speech (SpeechSynthesis) is not supported in this browser.");
-          }
+      if (response.data.response && 'speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(response.data.response);
+        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        // Optional: Try to find a specific voice
+        const voices = window.speechSynthesis.getVoices();
+        const desiredVoice = voices.find(voice => voice.lang === utterance.lang);
+        if (desiredVoice) {
+          utterance.voice = desiredVoice;
+        }
+        window.speechSynthesis.speak(utterance);
       }
       // --- End Text-to-Speech ---
     } catch (error) {
@@ -79,7 +69,7 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email.";
 
       // --- Specific Error Messages ---
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      if (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout'))) {
         fallbackResponse = "The request took too long. Please check your connection or try again.";
       } else if (!error.response) {
         // Network error (e.g., backend down)
@@ -99,15 +89,14 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
 
       setMessages(prev => [...prev, {
         text: fallbackResponse,
-        sender: 'bot-error' // You might style this differently if desired
+        sender: 'bot-error'
       }]);
 
       // Add TTS for fallback:
       if (fallbackResponse && 'speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(fallbackResponse);
-          utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
-          // Configure volume/rate/pitch if desired
-          window.speechSynthesis.speak(utterance);
+        const utterance = new SpeechSynthesisUtterance(fallbackResponse);
+        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
+        window.speechSynthesis.speak(utterance);
       }
     } finally {
       setIsLoading(false);
@@ -127,13 +116,30 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       <div className="p-4 border-b border-red-600 flex justify-between items-center">
         <h3 className="text-gray-300 font-bold">Recruiter Assistant</h3>
         <div className="flex items-center space-x-2"> {/* Wrapper for items */}
-          <button
-            onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
-            className="text-xs text-gray-300 hover:text-red-500"
-            aria-label="Toggle language"
-          >
-            {language === 'en' ? 'DE' : 'EN'}
-          </button>
+          {/* --- Updated Language Toggle with Icons --- */}
+                    {/* --- Updated Language Toggle with Icons --- */}
+          <div className="flex items-center space-x-1">
+            <span className="text-xs text-gray-400">Lang:</span>
+            <button
+              onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
+              aria-label={`Currently ${language === 'en' ? 'English' : 'German'}. Click to switch language.`}
+              // Title provides the tooltip on hover
+              title={`Switch to ${language === 'en' ? 'German (DE)' : 'English (EN)'}`}
+              className="flex items-center text-xs text-gray-300 hover:text-red-500 px-2 py-1 rounded hover:bg-gray-700 transition-colors duration-200"
+            >
+              {/* Show icon and current language abbreviation */}
+              {language === 'en' ? (
+                <>
+                  <FaFlagUsa className="mr-1" /> EN
+                </>
+              ) : (
+                <>
+                  <FaFlag className="mr-1" /> DE
+                </>
+              )}
+            </button>
+          </div>
+          {/* --- Close Button ... (rest of the code remains the same) --- */}
           {/* --- Close Button --- */}
           <button
             onClick={onClose} // Use the onClose prop
