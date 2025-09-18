@@ -72,7 +72,7 @@ if __name__ == "__main__":
     collection = initialize_collection()
 
     # --- Process English documents ---
-    english_docs_path = ".documents/english"
+    english_docs_path = ".documents/English"
     if os.path.exists(english_docs_path):
         print(f"Processing documents in '{english_docs_path}'...")
         for filename in os.listdir(english_docs_path):
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         print(f"Directory '{english_docs_path}' not found. Skipping English documents.")
 
     # --- Process German documents ---
-    german_docs_path = ".documents/german"
+    german_docs_path = ".documents/German"
     if os.path.exists(german_docs_path):
         print(f"Processing documents in '{german_docs_path}'...")
         for filename in os.listdir(german_docs_path):
