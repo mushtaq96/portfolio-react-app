@@ -1,10 +1,11 @@
 {
   "files": {
-    "main.css": "/portfolio-react-app/static/css/main.9ccac199.css",
-    "main.js": "/portfolio-react-app/static/js/main.24dcbdb2.js",
+    "main.css": "/portfolio-react-app/static/css/main.c6108df3.css",
+    "main.js": "/portfolio-react-app/static/js/main.d093266e.js",
     "static/media/profile.jpg": "/portfolio-react-app/static/media/profile.04348483c5b3de9045dc.jpg",
     "static/media/opensea.png": "/portfolio-react-app/static/media/opensea.1710d55eefd998dcd593.png",
     "static/media/realestate.jpg": "/portfolio-react-app/static/media/realestate.44fd19f4c6872731149c.jpg",
+    "static/media/intro-theme18-faster.mp3": "/portfolio-react-app/static/media/intro-theme18-faster.990db0ec76b7f1105aec.mp3",
     "static/media/movie_recommendation.png": "/portfolio-react-app/static/media/movie_recommendation.17c05ffb67c98640b1dd.png",
     "static/media/covid.png": "/portfolio-react-app/static/media/covid.123dd1ec2ad4775e862f.png",
     "static/media/movie.png": "/portfolio-react-app/static/media/movie.cf062d754ba4ebdb8ee1.png",
@@ -22,11 +23,11 @@
     "static/media/azure.svg": "/portfolio-react-app/static/media/azure.1d61f263f8c47bcccfc6982ed4c70e67.svg",
     "index.html": "/portfolio-react-app/index.html",
     "static/media/github.svg": "/portfolio-react-app/static/media/github.cf3c708621b7a00e1d3c9e9782f1fc98.svg",
-    "main.9ccac199.css.map": "/portfolio-react-app/static/css/main.9ccac199.css.map",
-    "main.24dcbdb2.js.map": "/portfolio-react-app/static/js/main.24dcbdb2.js.map"
+    "main.c6108df3.css.map": "/portfolio-react-app/static/css/main.c6108df3.css.map",
+    "main.d093266e.js.map": "/portfolio-react-app/static/js/main.d093266e.js.map"
   },
   "entrypoints": [
-    "static/css/main.9ccac199.css",
-    "static/js/main.24dcbdb2.js"
+    "static/css/main.c6108df3.css",
+    "static/js/main.d093266e.js"
   ]
 }
