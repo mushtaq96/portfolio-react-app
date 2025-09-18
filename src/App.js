@@ -78,7 +78,7 @@ function App() {
         {showChatbot ? '✕' : '💬'}
       </button>
 
-      {showChatbot && <ChatWindow />}
+      {showChatbot && <ChatWindow onClose={() => setShowChatbot(false)}/>}
     </div>
   );
 }
