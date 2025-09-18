@@ -92,3 +92,11 @@ Automatically handles all three browser policy scenarios:
 Audio is allowed (plays immediately)
 User has interacted with the site (plays after interaction)
 Site has been allowlisted (plays immediately)
+
+
+Future To do:
+1. Vite + React
+Faster development experience
+Better TypeScript support
+More modern build tools
+Easier to maintain and scale
