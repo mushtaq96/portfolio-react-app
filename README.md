@@ -100,3 +100,15 @@ Faster development experience
 Better TypeScript support
 More modern build tools
 Easier to maintain and scale
+
+
+have this in the root folder,
+# Default API base URL for development
+REACT_APP_API_BASE_URL=http://localhost:8000
+
+ollama pull phi3:mini
+ollama pull tinyllama (this did not work)
+
+# Make sure your .venv is activated
+source .venv/bin/activate
+python document_processor.py
