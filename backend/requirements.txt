@@ -10,3 +10,4 @@ pytest-asyncio
 httpx
 pytest-mock
 reportlab
+ollama
