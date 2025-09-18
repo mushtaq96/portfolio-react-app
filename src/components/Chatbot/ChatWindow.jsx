@@ -46,6 +46,34 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         sender: 'bot',
         context: response.data.context
       }]);
+      // --- Add Text-to-Speech ---
+      if (response.data.response) {
+          // 1. Check for browser support (good practice)
+          if ('speechSynthesis' in window) {
+              // 2. Create a new SpeechSynthesisUtterance object
+              const utterance = new SpeechSynthesisUtterance(response.data.response);
+
+              // 3. (Optional) Configure voice properties
+              utterance.lang = language === 'de' ? 'de-DE' : 'en-US'; // Match input language
+              utterance.volume = 1; // Range: 0 to 1
+              utterance.rate = 1;   // Range: 0.1 to 10
+              utterance.pitch = 1;  // Range: 0 to 2
+
+              // 4. (Optional) Find and set a specific voice
+              // This part can be tricky due to async voice loading, so setting lang is often sufficient for basic needs.
+              const voices = window.speechSynthesis.getVoices();
+              const desiredVoice = voices.find(voice => voice.lang === utterance.lang); // Example: find by language
+              if (desiredVoice) {
+                  utterance.voice = desiredVoice;
+              }
+
+              // 5. Speak the text!
+              window.speechSynthesis.speak(utterance);
+          } else {
+              console.warn("Text-to-Speech (SpeechSynthesis) is not supported in this browser.");
+          }
+      }
+      // --- End Text-to-Speech ---
     } catch (error) {
       console.error('Chat error:', error);
       let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email.";
@@ -73,6 +101,14 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         text: fallbackResponse,
         sender: 'bot-error' // You might style this differently if desired
       }]);
+
+      // Add TTS for fallback:
+      if (fallbackResponse && 'speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(fallbackResponse);
+          utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
+          // Configure volume/rate/pitch if desired
+          window.speechSynthesis.speak(utterance);
+      }
     } finally {
       setIsLoading(false);
     }
