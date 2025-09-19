@@ -78,6 +78,9 @@ Now, every time you push changes to the `main` branch, your app will be automati
 
 
 code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock" .
+code2prompt backend .
+
+Have a .env for the backend folder too.
 
 backend % PYTHONPATH=$(pwd) pytest tests
 
@@ -112,3 +115,70 @@ ollama pull tinyllama (this did not work)
 # Make sure your .venv is activated
 source .venv/bin/activate
 python document_processor.py
+
+
+Usage of the AI Chat
+
+# 🧪 **Testing Inputs for Your Portfolio Chatbot**
+
+Here are comprehensive test inputs in both English and German to verify your value proposition enhancement works correctly:
+
+## 🇬🇧 **English Test Inputs**
+
+### **Basic Functionality:**
+```
+Hello, who is Mushtaq Bokhari?
+What are your technical skills?
+Tell me about your cloud experience.
+```
+
+### **Value Proposition Questions:**
+```
+What value do you bring to address current IT shortages?
+Why should I hire you given market demands?
+What's your competitive advantage in today's job market?
+How do your skills address the current developer shortage?
+What unique value can you offer to our company?
+Why are you worth hiring in this competitive market?
+How do you stand out from other candidates?
+What benefits do you bring beyond technical skills?
+```
+
+### **Market-Specific Questions:**
+```
+How do your C# and Azure skills address market demands?
+What's your availability for immediate hiring?
+Can you work in both German and English teams?
+How do you handle cloud migration projects?
+What experience do you have with AI integration?
+```
+
+## 🇩🇪 **German Test Inputs**
+
+### **Basic Functionality:**
+```
+Hallo, wer ist Mushtaq Bokhari?
+Welche technischen Fähigkeiten haben Sie?
+Erzählen Sie mir von Ihrer Cloud-Erfahrung.
+```
+
+### **Value Proposition Questions:**
+```
+Welchen Mehrwert bieten Sie bei aktuellen IT-Engpässen?
+Warum sollten wir Sie bei Marktanforderungen einstellen?
+Was ist Ihr Wettbewerbsvorteil auf dem heutigen Arbeitsmarkt?
+Wie entsprechen Ihre Fähigkeiten dem aktuellen Entwicklermangel?
+Welchen einzigartigen Wert können Sie unserem Unternehmen bieten?
+Warum sind Sie eine lohnenswerte Einstellung in diesem Wettbewerbsmarkt?
+Wie heben Sie sich von anderen Kandidaten ab?
+Welche Vorteile bieten Sie über technische Fähigkeiten hinaus?
+```
+
+### **Market-Specific Questions:**
+```
+Wie entsprechen Ihre C#- und Azure-Fähigkeiten den Marktanforderungen?
+Was ist Ihre Verfügbarkeit für eine sofortige Einstellung?
+Können Sie in deutschen und englischen Teams arbeiten?
+Wie gehen Sie mit Cloud-Migrationsprojekten um?
+Welche Erfahrung haben Sie mit KI-Integration?
+```
