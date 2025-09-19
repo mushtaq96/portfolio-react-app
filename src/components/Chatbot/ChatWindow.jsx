@@ -1,11 +1,27 @@
-// src/components/Chatbot/ChatWindow.jsx
+// src/components/Chatbot/ChatWindow.jsx``
+
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import VoiceButton from './VoiceButton';
 import {FaFlagUsa, FaFlag} from 'react-icons/fa'; 
 
+const getApiBaseUrl = () => {
+  // Check environment variable first
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  
+  // In production, use Render backend URL (update this after deployment)
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://portfolio-react-app-ed20.onrender.com'; // Update after deployment
+  }
+  
+  // Default to localhost for development
+  return 'http://localhost:8000';
+};
+
 // --- 1. Use Environment Variable for API Base URL ---
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = getApiBaseUrl();
 
 const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   const [messages, setMessages] = useState([]);
@@ -37,7 +53,7 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     }
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/chat`, { // Use API_BASE_URL
+      const response = await axios.post(`${API_BASE_URL}/api/chat`, { 
         message: textToSend,
         history: messages,
         language
