@@ -10,3 +10,5 @@ pytest-asyncio
 httpx
 pytest-mock
 reportlab
+groq
+python-docx

@@ -1,10 +1,27 @@
-// src/components/Chatbot/ChatWindow.jsx
+// src/components/Chatbot/ChatWindow.jsx``
+
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-// import VoiceButton from './VoiceButton'; // Assuming VoiceButton is not integrated yet
+import VoiceButton from './VoiceButton';
+import {FaFlagUsa, FaFlag} from 'react-icons/fa'; 
+
+const getApiBaseUrl = () => {
+  // Check environment variable first
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  
+  // In production, use Render backend URL (update this after deployment)
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://portfolio-react-app-ed20.onrender.com'; // Update after deployment
+  }
+  
+  // Default to localhost for development
+  return 'http://localhost:8000';
+};
 
 // --- 1. Use Environment Variable for API Base URL ---
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = getApiBaseUrl();
 
 const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   const [messages, setMessages] = useState([]);
@@ -20,55 +37,92 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   useEffect(scrollToBottom, [messages]);
 
   // --- 2. Improved Error Handling & Fallback Responses ---
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (messageText = null) => { // Accept optional message text
+    // Use provided text (e.g., from voice) or the input state
+    const textToSend = messageText !== null ? messageText : input;
+
+    if (!textToSend.trim() || isLoading) return;
+
     setIsLoading(true);
-    const userMessage = { text: input, sender: 'user' };
+    const userMessage = { text: textToSend, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
+
+    // Clear the input field only if the message came from the input field
+    if (messageText === null) {
+      setInput('');
+    }
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/chat`, { // Use API_BASE_URL
-        message: input,
+      const response = await axios.post(`${API_BASE_URL}/api/chat`, { 
+        message: textToSend,
         history: messages,
         language
       });
-      setMessages(prev => [...prev, { 
-        text: response.data.response, 
+      setMessages(prev => [...prev, {
+        text: response.data.response,
         sender: 'bot',
-        context: response.data.context 
+        context: response.data.context
       }]);
+
+      // --- Add Text-to-Speech ---
+      if (response.data.response && 'speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(response.data.response);
+        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        // Optional: Try to find a specific voice
+        const voices = window.speechSynthesis.getVoices();
+        const desiredVoice = voices.find(voice => voice.lang === utterance.lang);
+        if (desiredVoice) {
+          utterance.voice = desiredVoice;
+        }
+        window.speechSynthesis.speak(utterance);
+      }
+      // --- End Text-to-Speech ---
     } catch (error) {
       console.error('Chat error:', error);
-      let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email."; // Default fallback
+      let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email.";
 
       // --- Specific Error Messages ---
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      if (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout'))) {
         fallbackResponse = "The request took too long. Please check your connection or try again.";
       } else if (!error.response) {
         // Network error (e.g., backend down)
         fallbackResponse = "The AI assistant seems to be offline at the moment. You can email me directly at mushtaq96smb@gmail.com!";
-        
+
         // --- Graceful Degradation Example ---
-        // Provide contextually relevant fallback for common questions if backend is down
-        const lowerInput = input.toLowerCase();
+        const lowerInput = textToSend.toLowerCase();
         if (lowerInput.includes('experience') || lowerInput.includes('work')) {
-             fallbackResponse = "I have experience in Full-Stack Development (React, Node.js, Python) and AI/ML (Deep Learning, NLP). Check out my 'Work' section for project details!";
+          fallbackResponse = "I have experience in Full-Stack Development (React, Node.js, Python) and AI/ML (Deep Learning, NLP). Check out my 'Work' section for project details!";
         } else if (lowerInput.includes('contact') || lowerInput.includes('email')) {
-             fallbackResponse = "You can reach me directly at mushtaq96smb@gmail.com!";
+          fallbackResponse = "You can reach me directly at mushtaq96smb@gmail.com!";
         } else if (lowerInput.includes('skills') || lowerInput.includes('tech')) {
-             fallbackResponse = "My skills include React, Python, Node.js, AI/ML, Docker, and Kubernetes. See my 'Skills' section for a full list!";
+          fallbackResponse = "My skills include React, Python, Node.js, AI/ML, Docker, and Kubernetes. See my 'Skills' section for a full list!";
         }
         // --- End Graceful Degradation ---
       }
-      // Add more specific error checks if needed
 
-      setMessages(prev => [...prev, { 
-        text: fallbackResponse, 
-        sender: 'bot-error' // You might style this differently if desired
+      setMessages(prev => [...prev, {
+        text: fallbackResponse,
+        sender: 'bot-error'
       }]);
+
+      // Add TTS for fallback:
+      if (fallbackResponse && 'speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(fallbackResponse);
+        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
+        window.speechSynthesis.speak(utterance);
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handler for voice input result
+  const handleVoiceResult = (transcript) => {
+    setInput(transcript); // Update the input field visually
+    handleSend(transcript); // Immediately send the transcribed text
   };
 
   return (
@@ -78,13 +132,30 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       <div className="p-4 border-b border-red-600 flex justify-between items-center">
         <h3 className="text-gray-300 font-bold">Recruiter Assistant</h3>
         <div className="flex items-center space-x-2"> {/* Wrapper for items */}
-          <button 
-            onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
-            className="text-xs text-gray-300 hover:text-red-500"
-            aria-label="Toggle language"
-          >
-            {language === 'en' ? 'DE' : 'EN'}
-          </button>
+          {/* --- Updated Language Toggle with Icons --- */}
+                    {/* --- Updated Language Toggle with Icons --- */}
+          <div className="flex items-center space-x-1">
+            <span className="text-xs text-gray-400">Lang:</span>
+            <button
+              onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
+              aria-label={`Currently ${language === 'en' ? 'English' : 'German'}. Click to switch language.`}
+              // Title provides the tooltip on hover
+              title={`Switch to ${language === 'en' ? 'German (DE)' : 'English (EN)'}`}
+              className="flex items-center text-xs text-gray-300 hover:text-red-500 px-2 py-1 rounded hover:bg-gray-700 transition-colors duration-200"
+            >
+              {/* Show icon and current language abbreviation */}
+              {language === 'en' ? (
+                <>
+                  <FaFlagUsa className="mr-1" /> EN
+                </>
+              ) : (
+                <>
+                  <FaFlag className="mr-1" /> DE
+                </>
+              )}
+            </button>
+          </div>
+          {/* --- Close Button ... (rest of the code remains the same) --- */}
           {/* --- Close Button --- */}
           <button
             onClick={onClose} // Use the onClose prop
@@ -100,10 +171,20 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, i) => (
           <div key={i} className={`p-3 rounded-lg ${
-            msg.sender === 'user' ? 'bg-blue-900 ml-auto' : 
-            msg.sender === 'bot-error' ? 'bg-red-900' : 'bg-gray-800' // Style bot-error
+            msg.sender === 'user' ? 'bg-blue-900 ml-auto' :
+            msg.sender === 'bot-error' ? 'bg-red-900' : 'bg-gray-800'
           }`}>
             <p>{msg.text}</p>
+            {/* Optional: Display context for debugging/testing
+            {msg.context && msg.context.length > 0 && (
+              <details className="mt-2 text-xs text-gray-400">
+                <summary>Context</summary>
+                <ul>
+                  {msg.context.map((ctx, idx) => <li key={idx}>{ctx}</li>)}
+                </ul>
+              </details>
+            )}
+            */}
           </div>
         ))}
         {isLoading && <div className="p-3 bg-gray-800 rounded-lg">Thinking...</div>}
@@ -119,8 +200,14 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
           placeholder="Ask about my experience..."
           disabled={isLoading}
         />
+        {/* Pass the new handler and other props to VoiceButton */}
+        <VoiceButton
+          onResult={handleVoiceResult} // Use the new handler
+          language={language}
+          disabled={isLoading}
+        />
         <button
-          onClick={handleSend}
+          onClick={() => handleSend()} // Pass input state explicitly or just call handleSend()
           disabled={isLoading}
           className="bg-red-600 text-white px-4 py-2 rounded-r hover:bg-red-700 disabled:opacity-50"
         >

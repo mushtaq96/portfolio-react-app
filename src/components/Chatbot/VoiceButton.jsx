@@ -1,89 +1,106 @@
+// src/components/Chatbot/VoiceButton.jsx
 import React, { useState, useEffect } from 'react';
 import { FaMicrophone, FaStop } from 'react-icons/fa';
-import axios from 'axios';
 
 const VoiceButton = ({ onResult, language, disabled }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [audioChunks, setAudioChunks] = useState([]);
+  const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
-    if (!navigator.mediaDevices) {
-      console.warn("MediaDevices API not supported");
+    // 1. Check for browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.warn("Web Speech API (SpeechRecognition) is not supported in this browser.");
+      // Optionally disable the button or show a message in the UI
       return;
     }
 
-    const setupRecorder = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const recorder = new MediaRecorder(stream);
-        
-        recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) {
-            setAudioChunks(prev => [...prev, e.data]);
-          }
-        };
-        
-        setMediaRecorder(recorder);
-      } catch (err) {
-        console.error("Error accessing microphone:", err);
+    // 2. Initialize the SpeechRecognition object
+    const recognitionInstance = new SpeechRecognition();
+    
+    // Configure recognition settings
+    recognitionInstance.continuous = false; // Stop recognition after first result
+    recognitionInstance.interimResults = false; // We only want final results
+    // Language will be set dynamically just before starting
+    
+    // 3. Set up event handlers
+    recognitionInstance.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      console.log("STT Transcript:", transcript);
+      // 4. Pass the result to the parent component (ChatWindow)
+      if (onResult) {
+        onResult(transcript);
       }
+      setIsRecording(false); // Automatically stop recording state
     };
 
-    setupRecorder();
-
-    return () => {
-      if (mediaRecorder) {
-        mediaRecorder.stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, []);
-
-  const startRecording = () => {
-    if (mediaRecorder && !isRecording) {
-      setAudioChunks([]);
-      mediaRecorder.start();
-      setIsRecording(true);
-    }
-  };
-
-  const stopRecording = async () => {
-    if (mediaRecorder && isRecording) {
-      mediaRecorder.stop();
+    recognitionInstance.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      // Handle specific errors if needed (e.g., 'no-speech', 'audio-capture')
       setIsRecording(false);
-      
-      // Process audio
-      if (audioChunks.length > 0) {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        await sendAudioToServer(audioBlob);
-      }
-    }
-  };
+    };
 
-  const sendAudioToServer = async (blob) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', blob, 'recording.webm');
-      
-      const response = await axios.post(
-        'http://localhost:8000/api/audio/input', 
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
-      
-      onResult(response.data.text);
-    } catch (error) {
-      console.error("Audio processing error:", error);
+    recognitionInstance.onend = () => {
+      console.log("Speech recognition ended.");
+      // Ensure button state is updated if it ends unexpectedly
+      if (isRecording) {
+        setIsRecording(false);
+      }
+    };
+
+    // 5. Store the recognition instance in component state
+    setRecognition(recognitionInstance);
+
+    // 6. Cleanup function (runs on component unmount)
+    return () => {
+      console.log("Cleaning up SpeechRecognition...");
+      if (recognitionInstance) {
+        recognitionInstance.stop(); // Ensure it's stopped
+      }
+    };
+  }, []); // Empty dependency array: run only once on mount
+
+  // Update language if it changes (e.g., from ChatWindow)
+  useEffect(() => {
+    if (recognition) {
+      recognition.lang = language === 'de' ? 'de-DE' : 'en-US';
+    }
+  }, [language, recognition]);
+
+  const toggleRecording = () => {
+    if (!recognition || disabled) return;
+
+    if (isRecording) {
+      // 7a. Stop recording if it's currently active
+      console.log("Stopping recording...");
+      recognition.stop();
+      // Note: The `onend` handler will set isRecording to false
+    } else {
+      // 7b. Start recording if it's currently inactive
+      try {
+        // Ensure the correct language is set before starting
+        recognition.lang = language === 'de' ? 'de-DE' : 'en-US';
+        recognition.start();
+        setIsRecording(true);
+        console.log("Starting recording...");
+      } catch (err) {
+        console.error("Error starting speech recognition:", err);
+        setIsRecording(false);
+      }
     }
   };
 
   return (
     <button
-      onClick={isRecording ? stopRecording : startRecording}
-      disabled={disabled || !mediaRecorder}
+      onClick={toggleRecording}
+      disabled={disabled || !recognition} // Disable if no recognition support or parent says so
       className={`p-2 mx-2 rounded-full ${
-        isRecording ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'
-      }`}
+        isRecording 
+          ? 'animate-pulse bg-red-600 text-white' // Visual feedback for recording
+          : 'bg-gray-200 text-gray-800 hover:bg-gray-300' 
+      } transition-colors duration-200`}
+      aria-label={isRecording ? "Stop recording" : "Start voice recording"}
     >
       {isRecording ? <FaStop /> : <FaMicrophone />}
     </button>
