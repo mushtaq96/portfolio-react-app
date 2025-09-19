@@ -47,3 +47,6 @@ backend/.chroma_db/
 
 # Document storage
 backend/.documents/
+
+# Environment variables file
+.env

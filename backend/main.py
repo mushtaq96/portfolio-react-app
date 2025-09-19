@@ -8,10 +8,15 @@ import os
 from typing import List, Dict
 # Import for document processing endpoint (if needed)
 # from document_processor import initialize_collection, process_pdf
-import chromadb # Import chromadb directly
-import ollama # Import the ollama client library
+import chromadb 
+from groq import Groq
+from dotenv import load_dotenv
 
 app = FastAPI()
+load_dotenv()  # Load environment variables from .env file
+
+# Initialise Groq client
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # CORS setup (Keep this)
 app.add_middleware(
@@ -100,7 +105,7 @@ class ChatInput(BaseModel):
 @app.post("/api/chat")
 async def chat(input: ChatInput):
     """Handle chat messages with RAG and LLM."""
-    global chroma_collection # <-- Use the correct global variable name
+    global chroma_collection 
 
     # 1. Check if ChromaDB is initialized for chat
     if chroma_collection is None:
@@ -160,22 +165,29 @@ Context:
 Question:
 {user_query}
 
-Answer:"""
-        # --- End NEW Prompt ---
+Answer (concise and professinal):"""
+        # --- End of Prompt ---
 
         print(f"Sending prompt to LLM (first 300 chars): {full_prompt[:300]}...")
 
-        # 5. Call the local LLM via Ollama
-        # Choose your model (ensure it's pulled via `ollama pull <model_name>`)
-        # Recommendation: Use phi3:mini or llama3.2:1b instead of tinyllama for better results
-        chosen_model = 'phi3:mini' # <--- CHOOSE YOUR MODEL HERE ---
-
-        # Use ollama.generate for simple text completion
-        # stream=False gets the full response at once
-        ollama_response = ollama.generate(model=chosen_model, prompt=full_prompt, stream=False)
-
-        # 6. Extract the generated text from the Ollama response
-        llm_response_text = ollama_response['response'].strip()
+        # 5. Call the LLM via Groq API
+        try:
+            chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": full_prompt,
+                }
+            ],
+            model="llama-3.1-8b-instant",
+            temperature=0.7,
+            max_tokens=200,
+            top_p=0.9,
+            )
+        except Exception as e:
+            print(f"Api key error: ", {e})
+        # 6. Extract the generated text from the response
+        llm_response_text = chat_completion.choices[0].message.content.strip()
         print(f"LLM Response: {llm_response_text}")
 
         # 7. Return the response and context
