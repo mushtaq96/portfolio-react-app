@@ -182,3 +182,4 @@ Können Sie in deutschen und englischen Teams arbeiten?
 Wie gehen Sie mit Cloud-Migrationsprojekten um?
 Welche Erfahrung haben Sie mit KI-Integration?
 ```
+# Deployment trigger
