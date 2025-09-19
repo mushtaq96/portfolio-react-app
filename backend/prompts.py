@@ -49,3 +49,6 @@ def get_language_instruction(language, is_devops_question=False):
         return "Der Benutzer hat auf Deutsch gefragt. Bitte antworten Sie auf Deutsch und vermischen Sie keine Sprachen."
     else:
         return ""
+
+
+# initiate deployment to render
