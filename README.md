@@ -77,7 +77,7 @@ Now, every time you push changes to the `main` branch, your app will be automati
 ![project structure](project_structure.png)
 
 
-code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock" .
+code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock,assets/" .
 code2prompt backend .
 
 Have a .env for the backend folder too.

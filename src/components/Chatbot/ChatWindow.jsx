@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import VoiceButton from './VoiceButton';
 import {FaFlagUsa, FaFlag} from 'react-icons/fa'; 
+import { FaRobot } from 'react-icons/fa'; 
 
 const getApiBaseUrl = () => {
   // Check environment variable first
@@ -24,7 +25,12 @@ const getApiBaseUrl = () => {
 const API_BASE_URL = getApiBaseUrl();
 
 const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      text: "Hi, I'm Mushtaq's AI assistant. Ask me about his skills, experience, or projects!",
+      sender: 'bot-welcome'
+    }
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('en');
@@ -130,50 +136,52 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     <div className="fixed bottom-8 right-8 w-96 bg-[#0a192f] border border-red-600 rounded-lg shadow-lg flex flex-col h-[500px] z-50">
       {/* Top Bar with Close Button */}
       <div className="p-4 border-b border-red-600 flex justify-between items-center">
-        <h3 className="text-gray-300 font-bold">Recruiter Assistant</h3>
-        <div className="flex items-center space-x-2"> {/* Wrapper for items */}
-          {/* --- Updated Language Toggle with Icons --- */}
-                    {/* --- Updated Language Toggle with Icons --- */}
-          <div className="flex items-center space-x-1">
+    <div className="flex items-center">
+        <FaRobot className="text-red-500 mr-2" />
+        <h3 className="text-gray-300 font-bold">My AI Spokesperson</h3>
+    </div>
+    <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
             <span className="text-xs text-gray-400">Lang:</span>
             <button
-              onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
-              aria-label={`Currently ${language === 'en' ? 'English' : 'German'}. Click to switch language.`}
-              // Title provides the tooltip on hover
-              title={`Switch to ${language === 'en' ? 'German (DE)' : 'English (EN)'}`}
-              className="flex items-center text-xs text-gray-300 hover:text-red-500 px-2 py-1 rounded hover:bg-gray-700 transition-colors duration-200"
+            onClick={() => setLanguage(lang => lang === 'en' ? 'de' : 'en')}
+            aria-label={`Currently ${language === 'en' ? 'English' : 'German'}. Click to switch language.`}
+            title={`Switch to ${language === 'en' ? 'German (DE)' : 'English (EN)'}`}
+            className="flex items-center text-xs text-gray-300 hover:text-red-500 px-2 py-1 rounded hover:bg-gray-700 transition-colors duration-200"
             >
-              {/* Show icon and current language abbreviation */}
-              {language === 'en' ? (
+            {language === 'en' ? (
                 <>
-                  <FaFlagUsa className="mr-1" /> EN
+                <FaFlagUsa className="mr-1" /> EN
                 </>
-              ) : (
+            ) : (
                 <>
-                  <FaFlag className="mr-1" /> DE
+                <FaFlag className="mr-1" /> DE
                 </>
-              )}
+            )}
             </button>
-          </div>
-          {/* --- Close Button ... (rest of the code remains the same) --- */}
-          {/* --- Close Button --- */}
-          <button
-            onClick={onClose} // Use the onClose prop
+        </div>
+        <button
+            onClick={onClose}
             className="text-gray-400 hover:text-white focus:outline-none"
             aria-label="Close chat"
-          >
+        >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-          </button>
-        </div>
-      </div>
+        </button>
+    </div>
+ </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, i) => (
-          <div key={i} className={`p-3 rounded-lg ${
-            msg.sender === 'user' ? 'bg-blue-900 ml-auto' :
-            msg.sender === 'bot-error' ? 'bg-red-900' : 'bg-gray-800'
-          }`}>
+          <div
+            key={i}
+            className={`p-3 rounded-lg ${
+              msg.sender === 'user' ? 'bg-blue-900 text-white' :
+              msg.sender === 'bot-error' ? 'bg-red-900 text-white' :
+              msg.sender === 'bot-welcome' ? 'bg-gray-700 border-red-500 text-gray-300' : // Style for welcome message
+              'bg-gray-800 text-gray-300'
+            }`}
+          >
             <p>{msg.text}</p>
             {/* Optional: Display context for debugging/testing
             {msg.context && msg.context.length > 0 && (

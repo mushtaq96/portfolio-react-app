@@ -9,6 +9,7 @@ import Work from "./components/Work";
 import ChatWindow from "./components/Chatbot/ChatWindow";
 import MusicConsentModal from "./components/MusicConsentModal"; // Import the new component
 import BgAudio from './assets/music/intro-theme18-faster.mp3';
+import { FaRobot } from 'react-icons/fa';
 
 function App() {
   const [showChatbot, setShowChatbot] = useState(false);
@@ -53,6 +54,13 @@ function App() {
     };
   }, []);
 
+// Listen for the custom event to open the chatbot from Home component
+  useEffect(() => {
+    const handleOpenChatbot = () => setShowChatbot(true);
+    window.addEventListener('openChatbot', handleOpenChatbot);
+    return () => window.removeEventListener('openChatbot', handleOpenChatbot);
+}, []);
+
   return (
     <div className="App">
       <Navbar />
@@ -71,12 +79,25 @@ function App() {
       </div>
 
       {/* Chatbot toggle button */}
-      <button
-        onClick={() => setShowChatbot(!showChatbot)}
-        className="fixed bottom-4 right-4 bg-red-600 text-white p-3 rounded-full shadow-lg z-40"
-      >
-        {showChatbot ? '✕' : '💬'}
-      </button>
+<button
+  onClick={() => setShowChatbot(!showChatbot)}
+  className="fixed bottom-4 right-4 bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg z-40 flex items-center transition-all duration-300 transform hover:scale-105 group" // Added group, transition, transform, hover:scale
+  aria-label={showChatbot ? 'Close Recruiter Assistant' : 'Open Recruiter Assistant'}
+>
+  <div className="relative">
+    {showChatbot ? (
+      <span className="text-xl">✕</span>
+    ) : (
+      <>
+        <FaRobot className="text-xl" />
+        {/* Tooltip/Label - hidden by default, shown on hover/focus */}
+        <span className="absolute hidden group-hover:block group-focus:block bg-black bg-opacity-70 text-white text-xs rounded py-1 px-2 whitespace-nowrap -top-10 left-1/2 transform -translate-x-1/2 z-50">
+          Ask my AI!
+        </span>
+      </>
+    )}
+  </div>
+</button>
 
       {showChatbot && <ChatWindow onClose={() => setShowChatbot(false)}/>}
     </div>
