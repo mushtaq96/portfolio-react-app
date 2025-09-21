@@ -1,0 +1,7 @@
+# portfolio-react-app/embedding_api/requirements.txt
+fastapi
+uvicorn[standard]
+sentence-transformers
+# Pydantic v2 is usually included by FastAPI, but specify if needed
+pydantic
+sentence-transformers

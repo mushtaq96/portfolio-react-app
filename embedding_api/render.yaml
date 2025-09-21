@@ -1,0 +1,11 @@
+# portfolio-react-app/embedding_api/render.yaml
+services:
+  - type: web
+    name: mushtaq-embedding-api 
+    env: python
+    plan: free 
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1 
+    envVars:
+      - key: EMBEDDING_MODEL_NAME
+        value: paraphrase-multilingual-MiniLM-L12-v2

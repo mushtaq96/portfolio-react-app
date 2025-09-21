@@ -1,0 +1,4 @@
+embedding_api/local_models/**/blobs/** filter=lfs diff=lfs merge=lfs -text
+embedding_api/local_models/**/*.safetensors filter=lfs diff=lfs merge=lfs -text
+embedding_api/local_models/**/*.bin filter=lfs diff=lfs merge=lfs -text
+embedding_api/local_models/**/snapshots/** filter=lfs diff=lfs merge=lfs -text
