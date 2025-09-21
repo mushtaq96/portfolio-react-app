@@ -1,5 +1,5 @@
 # portfolio-react-app/backend/main.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
@@ -9,9 +9,41 @@ from groq import Groq
 from dotenv import load_dotenv
 from prompts import get_base_instruction, is_value_question, get_language_instruction
 import httpx
+from collections import defaultdict
+import time
 
 app = FastAPI()
 load_dotenv()
+
+# === ADD RATE LIMITING HERE ===
+# Simple in-memory rate limiting
+usage = defaultdict(list)  # {ip: [timestamp1, timestamp2, ...]}
+MAX_REQUESTS = 5
+TIME_WINDOW = 3600  # 1 hour
+
+# Middleware to enforce rate limiting
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    # Only apply rate limiting to the chat endpoint
+    if request.url.path == "/api/chat":
+        client_ip = request.client.host
+        now = time.time()
+        
+        # Clean old requests (older than TIME_WINDOW)
+        usage[client_ip] = [t for t in usage[client_ip] if now - t < TIME_WINDOW]
+        
+        # Check if limit exceeded
+        if len(usage[client_ip]) >= MAX_REQUESTS:
+            raise HTTPException(
+                status_code=429, 
+                detail="Rate limit exceeded. You can only ask 5 questions per hour. Please contact me directly for more information."
+            )
+        
+        # Record this request
+        usage[client_ip].append(now)
+    
+    response = await call_next(request)
+    return response
 
 # Initialize Groq client
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
