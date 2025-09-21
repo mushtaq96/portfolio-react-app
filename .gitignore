@@ -43,7 +43,7 @@ htmlcov/
 *.log
 
 # ChromaDB persistent storage
-backend/.chroma_db/
+# backend/.chroma_db/
 
 # Document storage
 # backend/.documents/
