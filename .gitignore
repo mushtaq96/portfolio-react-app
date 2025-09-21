@@ -46,7 +46,7 @@ htmlcov/
 backend/.chroma_db/
 
 # Document storage
-# backend/.documents/
+backend/.documents/
 
 # Environment variables file
 .env
