@@ -1,69 +1,84 @@
-# portfolio-react-app/embedding_api/main.py
+# embedding_api/main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
-import os
+from typing import List
 import logging
+import threading
+# Import the service (ensure the path is correct relative to this file)
+from embedding_service import EmbeddingService
+# Import memory monitor if you still want it (optional for now)
+from memory_monitor import MemoryMonitor
 
-# --- Basic logging ---
-logging.basicConfig(level=logging.INFO)
+# Configure basic logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Embedding API", description="API for generating text embeddings.")
 
-# --- Load the model ONCE at startup ---
-# Use the same model name as in document_processor.py
-MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "./local_models/models--sentence-transformers--paraphrase-multilingual-MiniLM-L12-v2/snapshots/86741b4e3f5cb7765a600d3a3d55a0f6a6cb443d")
-embedding_model = None
+# Global variable for the service instance
+embedding_service: EmbeddingService = None
+memory_monitor = MemoryMonitor() # Optional
+
+class EmbeddingRequest(BaseModel):
+    texts: List[str]
+
+class EmbeddingResponse(BaseModel):
+    embeddings: List[List[float]]
 
 @app.on_event("startup")
-async def load_model():
-    global embedding_model
-    logger.info(f"Loading embedding model: {MODEL_NAME}...")
+async def startup_event():
+    global embedding_service # , memory_monitor
+    logger.info("Starting up Embedding API...")
     try:
-        # Load the model into memory
-        embedding_model = SentenceTransformer(MODEL_NAME)
-        logger.info(f"✅ Embedding model '{MODEL_NAME}' loaded successfully.")
+        # Initialize the singleton embedding service
+        # This will read EMBEDDING_MODEL_NAME and load the model from local path
+        embedding_service = EmbeddingService()
+        logger.info("Embedding service initialized successfully.")
+
+        # Optional: Start memory monitoring in a background thread
+        monitor_thread = threading.Thread(target=memory_monitor.monitor, daemon=True)
+        monitor_thread.start()
+        logger.info("Memory monitoring thread started.")
+
     except Exception as e:
-        logger.error(f"❌ Failed to load embedding model '{MODEL_NAME}': {e}")
-        # Optionally, you might want to raise an exception here to prevent the app from starting
-        # if the model is critical. For now, we'll log and let the /embed endpoint handle errors.
-        embedding_model = None
-
-
-# --- Define the input data structure ---
-class EmbeddingRequest(BaseModel):
-    texts: list[str] # Expect a list of strings to embed
-
-# --- Define the output data structure ---
-class EmbeddingResponse(BaseModel):
-    embeddings: list[list[float]] # List of embedding vectors
-
-# --- Create the API endpoint ---
-@app.post("/embed", response_model=EmbeddingResponse, summary="Generate Embeddings")
-async def get_embeddings(request: EmbeddingRequest):
-    """Generate embeddings for a list of texts."""
-    global embedding_model
-    if embedding_model is None:
-        logger.error("Embedding model not loaded.")
-        raise HTTPException(status_code=500, detail="Embedding model not loaded. Service might be starting up or encountered an error.")
-
-    try:
-        logger.info(f"Generating embeddings for {len(request.texts)} text(s).")
-        # Use the model to encode the texts into embeddings
-        # sentences_to_encode = request.texts
-        embeddings_list = embedding_model.encode(request.texts).tolist() # Convert NumPy array to list
-        logger.info("Embeddings generated successfully.")
-        return EmbeddingResponse(embeddings=embeddings_list)
-    except Exception as e:
-        logger.error(f"Error generating embeddings: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate embeddings: {str(e)}")
+        logger.error(f"Failed to initialize embedding service during startup: {e}", exc_info=True)
+        # Depending on your setup, you might want to exit here if the core service fails
+        # import sys; sys.exit(1) # Or let the app start but fail on first request
 
 @app.get("/health")
 async def health_check():
-    model_status = "loaded" if embedding_model else "not loaded"
-    return {"status": "healthy", "service": "embedding-api", "model": MODEL_NAME, "model_status": model_status}
+    model_status = "loaded" if embedding_service and embedding_service.model is not None else "not loaded"
+    return {"status": "healthy", "service": "embedding-api", "model_status": model_status}
+
+@app.post("/embed", response_model=EmbeddingResponse) # Use the response model
+async def get_embeddings(request: EmbeddingRequest): # Use the request model
+    global embedding_service
+    if embedding_service is None:
+        logger.error("Embedding service is not initialized.")
+        raise HTTPException(status_code=500, detail="Embedding service not initialized.")
+
+    logger.info(f"Received request to embed {len(request.texts)} text(s).")
+    try:
+        # Generate embeddings for each text in the list
+        # get_embedding is cached, so repeated identical texts are fast
+        embeddings_list = [embedding_service.get_embedding(text) for text in request.texts]
+
+        # Check if any embedding failed
+        if any(embedding is None for embedding in embeddings_list):
+            failed_indices = [i for i, emb in enumerate(embeddings_list) if emb is None]
+            logger.error(f"Failed to generate embeddings for texts at indices: {failed_indices}")
+            raise HTTPException(status_code=500, detail="Failed to generate one or more embeddings.")
+
+        logger.info("All embeddings generated successfully.")
+        return EmbeddingResponse(embeddings=embeddings_list)
+
+    except HTTPException:
+        # Re-raise HTTPExceptions (e.g., from the check above)
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in /embed endpoint: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")
 
 @app.get("/")
 async def root():
-    return {"message": "Embedding API is running!", "model": MODEL_NAME}
+    return {"message": "Embedding API is running!", "docs": "/docs"}

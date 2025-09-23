@@ -5,3 +5,4 @@ sentence-transformers
 # Pydantic v2 is usually included by FastAPI, but specify if needed
 pydantic
 sentence-transformers
+psutil
