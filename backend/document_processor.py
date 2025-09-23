@@ -12,7 +12,7 @@ from chromadb.utils import embedding_functions
 # Note: This model name is used during collection creation in initialize_collection
 # and determines which model ChromaDB will try to load for query-time embedding
 # if it needs to (e.g., if persistence doesn't fully capture it or on first query).
-MULTILINGUAL_EMBEDDING_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"
+MULTILINGUAL_EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 def initialize_collection(db_path="./.chroma_db", collection_name="portfolio_docs"):
     """Initialize the ChromaDB client and get/create the collection with the multilingual embedding function."""
@@ -116,9 +116,3 @@ def process_document(collection, filepath, language_tag=None):
     else:
         print(f"Unsupported file type: {filepath}")
         return False
-
-# --- IMPORTANT ---
-# The `if __name__ == "__main__":` block IS REMOVED from this file.
-# Its functionality is moved to the separate `build_db.py` script.
-# This file now purely contains the functions for document processing and collection interaction.
-# --- END IMPORTANT ---
