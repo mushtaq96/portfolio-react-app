@@ -1,15 +1,13 @@
 {
   "files": {
-    "main.css": "/portfolio-react-app/static/css/main.a6ffc95e.css",
-    "main.js": "/portfolio-react-app/static/js/main.8c323c1e.js",
+    "main.css": "/portfolio-react-app/static/css/main.b2284c97.css",
+    "main.js": "/portfolio-react-app/static/js/main.2d351d15.js",
     "static/media/profile.jpg": "/portfolio-react-app/static/media/profile.04348483c5b3de9045dc.jpg",
     "static/media/opensea.png": "/portfolio-react-app/static/media/opensea.1710d55eefd998dcd593.png",
-    "static/media/realestate.jpg": "/portfolio-react-app/static/media/realestate.44fd19f4c6872731149c.jpg",
     "static/media/intro-theme18-faster.mp3": "/portfolio-react-app/static/media/intro-theme18-faster.990db0ec76b7f1105aec.mp3",
     "static/media/movie_recommendation.png": "/portfolio-react-app/static/media/movie_recommendation.17c05ffb67c98640b1dd.png",
     "static/media/covid.png": "/portfolio-react-app/static/media/covid.123dd1ec2ad4775e862f.png",
     "static/media/movie.png": "/portfolio-react-app/static/media/movie.cf062d754ba4ebdb8ee1.png",
-    "static/media/workImg.jpeg": "/portfolio-react-app/static/media/workImg.e4c66be6ae2ae4f83608.jpeg",
     "static/media/react.png": "/portfolio-react-app/static/media/react.0cf951a69d8e58f83f9d.png",
     "static/media/comments.png": "/portfolio-react-app/static/media/comments.3a655f1753d3c700696e.png",
     "static/media/node.png": "/portfolio-react-app/static/media/node.952a9ea986dcfa5229ad.png",
@@ -23,11 +21,11 @@
     "static/media/azure.svg": "/portfolio-react-app/static/media/azure.1d61f263f8c47bcccfc6982ed4c70e67.svg",
     "index.html": "/portfolio-react-app/index.html",
     "static/media/github.svg": "/portfolio-react-app/static/media/github.cf3c708621b7a00e1d3c9e9782f1fc98.svg",
-    "main.a6ffc95e.css.map": "/portfolio-react-app/static/css/main.a6ffc95e.css.map",
-    "main.8c323c1e.js.map": "/portfolio-react-app/static/js/main.8c323c1e.js.map"
+    "main.b2284c97.css.map": "/portfolio-react-app/static/css/main.b2284c97.css.map",
+    "main.2d351d15.js.map": "/portfolio-react-app/static/js/main.2d351d15.js.map"
   },
   "entrypoints": [
-    "static/css/main.a6ffc95e.css",
-    "static/js/main.8c323c1e.js"
+    "static/css/main.b2284c97.css",
+    "static/js/main.2d351d15.js"
   ]
 }
