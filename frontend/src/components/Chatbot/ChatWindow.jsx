@@ -195,7 +195,7 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
             */}
           </div>
         ))}
-        {isLoading && <div className="p-3 bg-gray-800 rounded-lg">Thinking...</div>}
+        {isLoading && <div className="p-3 bg-gray-800 text-white rounded-lg">Thinking...</div>}
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t border-red-600 flex items-center">
