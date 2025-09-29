@@ -1,185 +1,167 @@
-# Personal Portfolio Website
+# Personal Portfolio Website with AI Chatbot
 
-This is a personal portfolio website built using React and Tailwind CSS. It is deployed on GitHub Pages using GitHub Actions.
+This repository contains my personal portfolio website, featuring a React frontend, a Python FastAPI backend, and an AI-powered chatbot. The chatbot uses Retrieval-Augmented Generation (RAG) to answer questions about my professional background, drawing from my CV/resume documents.
 
-## Getting Started
+## 🏗️ Architecture & Key Features
 
-To get started with this project, first clone the repository and navigate to the project directory.
+### 🧠 AI Chatbot (RAG)
+*   **Knowledge Base**: My CV/resume documents (PDF, DOCX) are processed offline.
+*   **Embedding**: Text chunks are converted to numerical vectors using the `sentence-transformers/all-MiniLM-L6-v2` model.
+*   **Storage**: Embeddings are stored in a ChromaDB vector database (`backend/.chroma_db`).
+*   **Retrieval**: When a user asks a question, it's embedded, and ChromaDB finds the most relevant text chunks.
+*   **Generation**: The retrieved context is sent to the Groq API (Llama 3.1) to generate a concise, professional answer.
 
-- `git clone` https://github.com/musthaq96/portfolio-react-app.git
-- `cd portfolio-react-app`
-- Next, install the dependencies by running `yarn install`.
+### 🖥️ Frontend (React & Tailwind CSS)
+*   Responsive, single-page application (SPA) located in the `frontend/` directory.
+*   Interactive UI components showcasing projects, skills, and experience.
+*   Integrated chatbot interface with typing indicators and message history.
+*   Auto-play policy compliant background music.
 
-## Available Scripts
+### ⚙️ Backend (FastAPI & Python)
+*   RESTful API for chat interactions and health checks.
+*   Rate limiting (IP-based) to prevent API abuse.
+*   Manages the ChromaDB collection for RAG.
 
-In the project directory, you can run:
+### 🧮 Dedicated Embedding API (FastAPI & Python)
+*   A separate service to handle the computationally intensive task of generating text embeddings.
+*   Loads the embedding model (`all-MiniLM-L6-v2`) from local disk to avoid runtime downloads and SSL issues.
+*   Designed for deployment on Render's free tier (512MB RAM) by offloading memory usage from the main backend.
+*   Ensures stability and performance of the main website backend.
 
-### `yarn start`
+### ☁️ Deployment
+*   **Frontend**: Deployed on GitHub Pages using GitHub Actions.
+*   **Backend & Embedding API**: Deployed on Render (Free Tier).
+*   **Database**: ChromaDB index is persisted and committed to the repository via Git LFS.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
+*   Node.js & Yarn (for frontend)
+*   Python 3.9+ & `pip` (for backend services)
+*   Git & Git LFS (for managing large model/database files)
 
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-### Deployment to GitHub Pages
-
-To deploy the app to GitHub Pages, run `yarn run deploy`.
-
-## Setting up GitHub Actions for Deployment, an example
-
-To set up GitHub Actions for deployment, follow these steps:
-
-1. In your repository on GitHub, navigate to the "Actions" tab.
-2. Click on "New workflow" and select "set up a workflow yourself".
-3. Replace the content of the file with the following:
-
-```
-name: Deploy to GitHub Pages
-
-on: push: branches: - main
-
-jobs: build-and-deploy: runs-on: ubuntu-latest steps: - name: Checkout uses: actions/checkout@v2
-
-- name: Set up Node.js
-  uses: actions/setup-node@v2
-  with:
-  node-version: 16.x
-
-- name: Install dependencies
-  run: yarn install
-
-- name: Build
-  run: yarn build
-
-- name: Deploy
-  uses: peaceiris/actions-gh-pages@v3
-  with:
-  github_token: ${{ secrets.GITHUB_TOKEN }}
-  publish_dir: ./build
-
+### Cloning the Repository
+```bash
+git clone https://github.com/mushtaq96/portfolio-react-app.git
+cd portfolio-react-app
 ```
 
-4. Commit and push your changes.
+### Frontend Setup & Local Development
+1.  Navigate to the frontend directory: `cd frontend`
+2.  Install dependencies: `yarn install`
+3.  Start the development server: `yarn start`
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Now, every time you push changes to the `main` branch, your app will be automatically built and deployed to GitHub Pages.
+### Backend Setup & Local Development
 
+#### 1. Main Backend (`backend/`)
+*   **Virtual Environment**: Create and activate a virtual environment (e.g., `python -m venv .venv && source .venv/bin/activate`).
+*   **Dependencies**: Install required packages: `pip install -r backend/requirements.txt`.
+*   **Environment Variables**:
+    *   Create a `.env` file in the `backend/` directory.
+    *   Add `GROQ_API_KEY=your_actual_groq_api_key_here`.
+    *   *(Optional for local dev)* Add `EMBEDDING_API_URL=http://localhost:8001` (if running the Embedding API locally).
+*   **Run**: `cd backend && uvicorn main:app --reload --port 8000`.
 
+#### 2. Embedding API (`embedding_api/`)
+*   **Virtual Environment**: Create and activate a virtual environment (e.g., `python -m venv .venv_embedding_api && source .venv_embedding_api/bin/activate`).
+*   **Dependencies**: Install required packages: `pip install -r embedding_api/requirements.txt`.
+*   **Model**: The `sentence-transformers/all-MiniLM-L6-v2` model is stored locally in `embedding_api/local_models/` and tracked with Git LFS.
+*   **Run**: `cd embedding_api && uvicorn main:app --reload --port 8001`.
 
-![project structure](project_structure.png)
+### Data Preparation (Offline)
+1.  Place your CV/resume documents (PDF, DOCX) in `backend/.documents/English/` and `backend/.documents/German/`.
+2.  Activate the backend virtual environment.
+3.  Run the build script: `cd backend && python build.py`. This script processes the documents, generates embeddings using the model specified in `document_processor.py` (which should match the Embedding API model), and creates/updates the `backend/.chroma_db/` folder.
 
+## 🧪 Testing the AI Chatbot
 
-code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock,assets/" .
-code2prompt backend .
+You can test the chatbot via the frontend UI or directly using `curl`:
 
-Have a .env for the backend folder too.
-
-backend % PYTHONPATH=$(pwd) pytest tests
-
-create .documents folder to store data
-.chroma_db will be the location
-
-
-
-
-Browser Policy Compliance - AutoPlay Music
-Automatically handles all three browser policy scenarios:
-Audio is allowed (plays immediately)
-User has interacted with the site (plays after interaction)
-Site has been allowlisted (plays immediately)
-
-
-Future To do:
-1. Vite + React
-Faster development experience
-Better TypeScript support
-More modern build tools
-Easier to maintain and scale
-
-
-have this in the root folder,
-# Default API base URL for development
-REACT_APP_API_BASE_URL=http://localhost:8000
-
-ollama pull phi3:mini
-ollama pull tinyllama (this did not work)
-
-# Make sure your .venv is activated
-source .venv/bin/activate
-python document_processor.py
-
-
-Usage of the AI Chat
-
-# 🧪 **Testing Inputs for Your Portfolio Chatbot**
-
-Here are comprehensive test inputs in both English and German to verify your value proposition enhancement works correctly:
-
-## 🇬🇧 **English Test Inputs**
-
-### **Basic Functionality:**
-```
-Hello, who is Mushtaq Bokhari?
-What are your technical skills?
-Tell me about your cloud experience.
+```bash
+curl -X POST http://localhost:8000/api/chat \
+    -H "Content-Type: application/json" \
+    -d '{"message": "What are your key technical skills?", "language": "en"}'
 ```
 
-### **Value Proposition Questions:**
-```
-What value do you bring to address current IT shortages?
-Why should I hire you given market demands?
-What's your competitive advantage in today's job market?
-How do your skills address the current developer shortage?
-What unique value can you offer to our company?
-Why are you worth hiring in this competitive market?
-How do you stand out from other candidates?
-What benefits do you bring beyond technical skills?
-```
+Try these example prompts:
+*   English: "What value do you bring to address current IT shortages?", "Tell me about your cloud experience."
+*   German: "Welchen Mehrwert bieten Sie bei aktuellen IT-Engpässen?", "Erzählen Sie mir von Ihrer Cloud-Erfahrung."
 
-### **Market-Specific Questions:**
-```
-How do your C# and Azure skills address market demands?
-What's your availability for immediate hiring?
-Can you work in both German and English teams?
-How do you handle cloud migration projects?
-What experience do you have with AI integration?
-```
+## 📦 Deployment
 
-## 🇩🇪 **German Test Inputs**
+### Frontend (GitHub Pages)
+1.  Update the `homepage` field in `frontend/package.json` if deploying to a different repo/user.
+2.  *(If using a script like `yarn run deploy` from the root)*: Ensure your deployment script (e.g., `gh-pages -d frontend/build`) correctly points to the built files in `frontend/build`.
+3.  *(Or using GitHub Actions)*: Update your workflow file (e.g., `.github/workflows/deploy.yml`) to build from the `frontend` directory and publish the `frontend/build` folder:
+    ```yaml
+    # ... (other workflow steps)
+    - name: Build
+      run: cd frontend && yarn build # Change: Navigate to frontend
 
-### **Basic Functionality:**
-```
-Hallo, wer ist Mushtaq Bokhari?
-Welche technischen Fähigkeiten haben Sie?
-Erzählen Sie mir von Ihrer Cloud-Erfahrung.
-```
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./frontend/build # Change: Point to frontend build directory
+    # ...
+    ```
 
-### **Value Proposition Questions:**
-```
-Welchen Mehrwert bieten Sie bei aktuellen IT-Engpässen?
-Warum sollten wir Sie bei Marktanforderungen einstellen?
-Was ist Ihr Wettbewerbsvorteil auf dem heutigen Arbeitsmarkt?
-Wie entsprechen Ihre Fähigkeiten dem aktuellen Entwicklermangel?
-Welchen einzigartigen Wert können Sie unserem Unternehmen bieten?
-Warum sind Sie eine lohnenswerte Einstellung in diesem Wettbewerbsmarkt?
-Wie heben Sie sich von anderen Kandidaten ab?
-Welche Vorteile bieten Sie über technische Fähigkeiten hinaus?
-```
+### Backend & Embedding API (Render)
+1.  Ensure the `all-MiniLM-L6-v2` model files in `embedding_api/local_models/` and the generated `.chroma_db` folder in `backend/` are committed and pushed to GitHub (they are tracked with Git LFS).
+2.  Create two Web Services on Render:
+    *   **Main Backend**:
+        *   Name: `portfolio-backend`
+        *   Root Directory: `backend`
+        *   Build Command: `pip install -r requirements.txt`
+        *   Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+        *   Environment Variables:
+            *   `GROQ_API_KEY`: Your actual Groq API key.
+            *   `EMBEDDING_API_URL`: The public URL of your deployed Embedding API service (e.g., `https://your-embedding-api.onrender.com`).
+            *   `PORT`: `10000` (or Render's default `$PORT`).
+    *   **Embedding API**:
+        *   Name: `mushtaq-embedding-api`
+        *   Root Directory: `embedding_api`
+        *   Build Command: `pip install -r requirements.txt`
+        *   Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+        *   Environment Variables:
+            *   `EMBEDDING_MODEL_NAME`: `all-MiniLM-L6-v2`
+            *   `PORT`: Render's default `$PORT`.
 
-### **Market-Specific Questions:**
-```
-Wie entsprechen Ihre C#- und Azure-Fähigkeiten den Marktanforderungen?
-Was ist Ihre Verfügbarkeit für eine sofortige Einstellung?
-Können Sie in deutschen und englischen Teams arbeiten?
-Wie gehen Sie mit Cloud-Migrationsprojekten um?
-Welche Erfahrung haben Sie mit KI-Integration?
-```
-# Deployment trigger
+## 🛠️ Technical Decisions & Rationale
+
+### Choosing `all-MiniLM-L6-v2`
+*   **Model Characteristics**: This model maps sentences & paragraphs to a **384 dimensional dense vector space**. It was fine-tuned on a large dataset of over 1 billion sentence pairs using contrastive learning. By default, input text longer than 256 word pieces is truncated.
+*   **Performance & Efficiency**: This model is significantly smaller (~175MB) than multilingual alternatives like `paraphrase-multilingual-MiniLM-L12-v2` (~900MB), making it ideal for the Embedding API to stay within Render's 512MB RAM limit while providing robust semantic understanding for the RAG pipeline.
+*   **Capability**: While trained primarily on English data, its broad training makes it suitable for capturing semantic meaning in other languages like German to a reasonable degree, supporting the bilingual nature of the portfolio.
+*   **Reliability**: Loading the model from local disk (via Git LFS) avoids runtime network dependencies and potential SSL issues, ensuring consistent startup and operation on deployment platforms like Render.
+
+### Performance & Efficiency Considerations
+*   **Resource Optimization**: The dedicated Embedding API service isolates memory-intensive operations, preventing the main backend from exceeding Render's free tier limits.
+*   **Cost Awareness**: Designed specifically for cost-effective deployment on free tiers (Render, GitHub Pages). Monitored Groq API usage via rate limiting helps manage potential costs.
+*   **Latency**: *(Optional - Add if you have data)* Typical response time for simple queries is under [X] seconds on the Render free tier.
+
+### Security Considerations
+*   **API Key Management**: Groq API keys are stored securely using environment variables on the deployment platform (Render).
+*   **Rate Limiting**: IP-based rate limiting is implemented on the `/api/chat` endpoint to prevent abuse of the Groq API and protect backend resources.
+
+---
+
+## 📊 Performance & Metrics *(Estimated on Free Tier)*
+*   **Embedding Dimensionality**: 384
+*   **Model Size**: ~175 MB
+*   **Memory Usage (Embedding API)**: ~400 MB RSS when loaded
+*   **Response Latency (Est.)**: Typically under 2 seconds for simple queries (depends on Groq API).
+
+## 📸 Screenshots *(Coming Soon)*
+*(Placeholder for screenshots of the frontend UI and a sample chat interaction)*
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🚀 Future Work
+*   Migrate frontend build process to Vite for faster development and modern tooling.
+*   Implement more sophisticated caching mechanisms for common queries.
+*   Explore multi-turn conversation capabilities for the chatbot.
+
+---

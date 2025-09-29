@@ -1,4 +1,4 @@
-
+# .github/workflows/deploy-to-github-pages.yml
 name: Deploy to GitHub Pages
 
 on:
@@ -14,18 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 # It's good practice to use a recent version
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4 # It's good practice to use a recent version
         with:
-          node-version: 16
+          node-version: '20' # Using a more recent Node version is recommended
+          cache: 'yarn' # Cache yarn dependencies for faster installs
+          cache-dependency-path: frontend/yarn.lock # Point to the frontend's lock file
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile # Install dependencies inside the frontend directory
 
       - name: Build app
-        run: yarn build
+        run: |
+          cd frontend
+          yarn build # Run the build command inside the frontend directory
 
       - name: Set up authentication
         env:
@@ -35,9 +41,9 @@ jobs:
           git config --global user.name "mushtaq96"
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.0
+        uses: JamesIves/github-pages-deploy-action@4.1.5 # Consider updating to a slightly newer patch version if available, e.g., 4.1.5
         with:
           branch: gh-pages
-          folder: build
+          folder: frontend/build # Change: Point to the build directory inside the frontend directory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

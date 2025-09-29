@@ -7,7 +7,6 @@ import ReactImg from '../assets/react.png';
 import Node from '../assets/node.png';
 import Tailwind from '../assets/tailwind.png';
 import Python from '../assets/python.png';
-import Mongo from '../assets/tailwind.png';
 import MySQL from '../assets/mysql.png';
 import CSharp from '../assets/cSharp.png';
 import Git from '../assets/github.svg';
@@ -50,8 +49,8 @@ const Skills = () =>{
                         <p className='my-4'>Docker</p>
                     </div>
                     <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
-                        <img className='w-20 mx-auto' src={Mongo} alt="Mongo icon"/>
-                        <p className='my-4'>Mongo Db</p>
+                        <img className='w-20 mx-auto' src={Tailwind} alt="Tailwind icon"/>
+                        <p className='my-4'>Tailwind</p>
                     </div>
                     <div className='shadow-md shadow-[#040c16] hover:scale-110 duration-500'>
                         <img className='w-20 mx-auto' src={MySQL} alt="MySQL icon"/>
