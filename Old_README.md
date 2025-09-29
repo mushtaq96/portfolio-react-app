@@ -182,4 +182,63 @@ Können Sie in deutschen und englischen Teams arbeiten?
 Wie gehen Sie mit Cloud-Migrationsprojekten um?
 Welche Erfahrung haben Sie mit KI-Integration?
 ```
-# Deployment trigger
+### Random notes
+
+76404798589083046567
+Baaziger96@cg!
+
+
+Cost Optimization Expert Tips 
+Token Optimization Strategies: 
+1. Prompt Engineering: Reduce unnecessary tokens by 30-50%
+2. Caching: Cache common responses (50% cost reduction)
+3. Temperature Control: Lower temperature = more predictable, shorter responses
+4. Max Tokens: Set appropriate limits (500 tokens ≈ 375 words)
+
+
+// German queries your chatbot should handle:
+"Erzählen Sie mir von Ihren React-Erfahrungen"
+"Was sind Ihre Stärken?"
+"Welche Projekte haben Sie entwickelt?"
+"Wie kann ich Sie kontaktieren?"
+
+// English queries:
+"Tell me about your React experience"
+"What are your strengths?"
+"What projects have you built?"
+"How can I contact you?"
+
+
+# Implement these instead of choosing cheaper model:
+1. Add response caching for common queries
+2. Optimize prompts to reduce token usage by 30%
+3. Limit response length to essential information
+4. Use prompt templates to ensure consistent, efficient queries
+
+Agent Capabilities You DON'T Need right now : 
+* Web search for current job market data
+* Email integration to contact you
+* Calendar scheduling for interviews
+* File analysis beyond your pre-loaded docs
+* Real-time data fetching
+
+	Creating a separate Embedding API is the most optimal solution right now because it moves the memory-heavy task of loading the AI model away from your main website's backend, ensuring your website stays fast and doesn't crash, especially when you deploy it for free online where computer power is limited.
+*  
+
+The external Embedding API acts as a robust fallback plan, ensuring the chat works smoothly for the recruiter regardless of the specific memory behavior of ChromaDB's persistence on Render. It demonstrates good engineering practices (separation of concerns, planning for scalability/performance) which are positive signals in a portfolio project.
+y pointing directly to the snapshot directory, we are telling sentence-transformers exactly where the config.json, model.safetensors, and other necessary files are located, bypassing potential issues with the higher-level repository structure that might be confusing it.
+
+To simplify deployment and ensure consistency, the featureAI branch (containing the embedding_api code and large LFS-tracked model files) was merged into main. This allows both the portfolio-backend (which needs the .chroma_db index) and the mushtaq-embedding-api services to be deployed from the same, stable main branch on Render. This avoids managing deployments from multiple branches and keeps all necessary runtime assets together, despite the increased repository size due to LFS files. 
+ 
+
+Based on Your Previous Findings: 
+* You already know that paraphrase-multilingual-MiniLM-L12-v2 () works for your needs (English + German) but is large (915MB).
+You found paraphrase-MiniLM-L6-v2 (), which is small and good for English, but not explicitly trained for German (though it might still produce usable embeddings).
+
+https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+
+Before I had used this 
+https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+
+
+When to run? ‘git lfs status  ‘
