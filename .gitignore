@@ -1,15 +1,12 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/   for more about ignoring files.
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Frontend dependencies
+frontend/node_modules # Ignore node_modules inside the frontend directory
+frontend/build # Change: Ignore the React build directory inside the frontend directory
+*/node_modules
+*/.pnp
+*.pnp.js
 
-# testing
-/coverage
-
-# production
-/build
 
 # misc
 .DS_Store
@@ -33,7 +30,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Coverage and test output
+# Coverage and test output (Python)
 htmlcov/
 *.coverage
 *.pyc
@@ -43,7 +40,7 @@ htmlcov/
 *.log
 
 # ChromaDB persistent storage
-# backend/.chroma_db/
+backend/.chroma_db/
 
 # Document storage
 # backend/.documents/
