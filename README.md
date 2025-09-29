@@ -146,6 +146,15 @@ Try these example prompts:
 *   **Rate Limiting**: IP-based rate limiting is implemented on the `/api/chat` endpoint to prevent abuse of the Groq API and protect backend resources.
 
 ---
+## 🛠️ Development Tools
+
+### Code to Prompt Utility
+The `code2prompt` tool is used to generate context for AI models by extracting code structure and content while excluding unnecessary files.
+
+**Usage:**
+```bash
+code2prompt --exclude="node_modules/**,.venv/**,__pycache__/**,public/**,*.svg,*.ico,package-lock.json,yarn.lock,assets/,embedding_api/**,backend/**" .
+```
 
 ## 📊 Performance & Metrics *(Estimated on Free Tier)*
 *   **Embedding Dimensionality**: 384
@@ -165,3 +174,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 *   Explore multi-turn conversation capabilities for the chatbot.
 
 ---
+
+
