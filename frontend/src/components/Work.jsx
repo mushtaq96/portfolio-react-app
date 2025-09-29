@@ -1,6 +1,5 @@
+// src/components/Work.jsx
 import React from 'react'
-import WorkImg from '../assets/workImg.jpeg'
-import realEstate from '../assets/realestate.jpg'
 import Opensea from '../assets/projects/opensea.png'
 import Covid from '../assets/projects/covid.png'
 import Comments from '../assets/projects/comments.png'
@@ -16,21 +15,20 @@ const Work = () => {
                     <p className='text-4xl font-bold inline border-b-4 text-gray-300 border-red-600'>Work</p>
                     <p className='py-6'>// Check out some of my recent work</p>
                 </div>
-
                 {/* container */}
                 <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
-
-                    {/* grid item */}
-                    <div  
-                        style={{backgroundImage:`url(${Opensea})`}}
+                    {/* grid item - NFT Marketplace */}
+                    <div
+                        style={{ backgroundImage: `url(${Opensea})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 NFT Marketplace (React Js)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>Full-stack NFT marketplace with blockchain integration.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="https://opensea-production.vercel.app/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -41,17 +39,18 @@ const Work = () => {
                         </div>
                     </div>
 
-                     {/* grid item */}
-                     <div  
-                        style={{backgroundImage:`url(${MoiveRecommentation})`}}
+                    {/* grid item - PyMovieRec */}
+                     <div
+                        style={{ backgroundImage: `url(${MoiveRecommentation})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 PyMovieRec (Python)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>Python-based movie recommendation engine using ML.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="/">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -62,17 +61,18 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* grid item */}
-                    <div  
-                        style={{backgroundImage:`url(${SearchPDF})`}}
+                    {/* grid item - Search PDF */}
+                    <div
+                        style={{ backgroundImage: `url(${SearchPDF})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Search PDF (Python)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>AI-powered tool to ask questions about PDF content.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="/">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -83,17 +83,18 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* grid item */}
-                    <div  
-                        style={{backgroundImage:`url(${Covid})`}}
+                    {/* grid item - Covid Tracker */}
+                    <div
+                        style={{ backgroundImage: `url(${Covid})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Covid Tracker (React Js)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>Real-time COVID-19 data visualization dashboard.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="https://my-coronatracker.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -104,17 +105,18 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* grid item */}
-                    <div  
-                        style={{backgroundImage:`url(${Comments})`}}
+                    {/* grid item - Source Code Comments */}
+                    <div
+                        style={{ backgroundImage: `url(${Comments})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Source Code (Python)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>Python script to analyze source code comments.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="https://cryptic-refuge-46980.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -125,17 +127,18 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* grid item */}
-                    <div  
-                        style={{backgroundImage:`url(${Movie})`}}
+                    {/* grid item - Movie Database */}
+                    <div
+                        style={{ backgroundImage: `url(${Movie})` }}
                         className='shadow-lg shadow-[#040c16] group container rounded-md flex justify-center items-center mx-auto content-div'>
-
                         {/* Hover effects */}
-                        <div className='opacity-0 group-hover:opacity-100 text-center'> 
+                        <div className='opacity-0 group-hover:opacity-100 text-center p-2'> {/* Added p-2 for internal padding */}
                             <span className='text-2xl font-bold text-white tracking-wider'>
                                 Movie Database(React JS)
                             </span>
-                            <div className='pt-8 text-center'>
+                            {/* Added project description */}
+                            <p className='text-white mt-2'>Interactive movie search and information web app.</p>
+                            <div className='pt-4 text-center'> {/* Reduced pt from 8 to 4 for better spacing with new text */}
                                 <a href="https://my-movie-search-webapp.herokuapp.com/" target="_blank" rel="noreferrer">
                                     <button className='text-center rounded-lg px-4 py-3 m-2 bg-white text-gray-700 font-bold text-lg'>Demo</button>
                                 </a>
@@ -145,7 +148,6 @@ const Work = () => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
