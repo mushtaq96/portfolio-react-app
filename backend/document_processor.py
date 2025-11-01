@@ -14,6 +14,18 @@ import tempfile
 import re
 from pathlib import Path
 
+# Initialize OCR reader globally if possible, potentially falling back to CPU
+try:
+    reader = easyocr.Reader(['en'], gpu=True)  # Try GPU first
+    print("EasyOCR initialized with GPU.")
+except:
+    try:
+        reader = easyocr.Reader(['en'], gpu=False)  # Fallback to CPU
+        print("EasyOCR initialized with CPU due to GPU issues.")
+    except Exception as e:
+        reader = None
+        print(f"Failed to initialize EasyOCR: {e}")
+
 MULTILINGUAL_EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 
@@ -104,14 +116,23 @@ def extract_text_from_eml(filepath):
 
 
 def extract_text_from_image(filepath):
-    """Extract text from image using OCR."""
+    """Extract text from image using OCR. Handles potential CUDA errors."""
+    if reader is None:
+        print(f"EasyOCR not available, skipping OCR for {filepath}")
+        return ""
     try:
-        reader = easyocr.Reader(['en'])  # Add more languages if needed
+        # Attempt OCR
+        print(f"Attempting OCR on {filepath}...")
         # detail=0 returns only text
         result = reader.readtext(filepath, detail=0)
-        return "\n".join(result)
+        extracted_text = "\n".join(result)
+        print(
+            f"OCR successful on {filepath}, extracted {len(extracted_text)} characters.")
+        return extracted_text
     except Exception as e:
         print(f"Error performing OCR on {filepath}: {e}")
+        # Optionally, try a different library or just return empty string
+        # For now, return empty string if OCR fails
         return ""
 
 
@@ -122,11 +143,7 @@ def extract_text_from_csv_xlsx(filepath):
             df = pd.read_csv(filepath)
         else:  # .xlsx
             df = pd.read_excel(filepath)
-        # Convert DataFrame to string, separating cells with newlines
-        # This might need refinement based on how tables are expected to be understood
-        # Using sep='\n' might not be ideal
-        text = df.to_csv(index=False, sep='\n')
-        # A better approach might be to iterate rows/columns explicitly
+        # Convert DataFrame to string
         text = df.to_string(index=False)
         return text
     except Exception as e:
@@ -193,8 +210,8 @@ def extract_text_from_py(filepath):
         docstrings = re.findall(docstring_pattern, content)
 
         all_text = "\n".join(comments + docstrings)
-        # Optionally, also include the raw code content
-        # all_text += "\n" + content
+        # include the raw code content
+        all_text += "\n" + content
         return all_text
     except Exception as e:
         print(f"Error processing {filepath}: {e}")
@@ -283,7 +300,7 @@ def process_document(collection, filepath, language_tag=None):
                 # Consider returning False here if empty text is problematic
                 # return False
 
-        # Chunk the text (reuse existing logic)
+        # Chunk the text
         chunk_size = 1000
         chunks = [text[i:i+chunk_size]
                   for i in range(0, len(text), chunk_size)]

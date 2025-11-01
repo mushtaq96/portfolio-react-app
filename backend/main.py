@@ -103,7 +103,8 @@ if ALLOW_INDEXING:
                         # Assuming paths are stored as strings in the JSON
                         # Normalize paths
                         processed_files = {
-                            Path(k).resolve(): v for k, v in processed_files.items()}
+                            str(Path(k).resolve()): v for k,
+                            v in processed_files.items()}
                 except (json.JSONDecodeError, IOError) as e:
                     print(
                         f"Warning: Could not read {PROCESSED_FILES_LOG}, starting fresh. Error: {e}")
@@ -117,15 +118,20 @@ if ALLOW_INDEXING:
                     for file in files:
                         filepath = Path(root) / file
                         # Use .resolve() to get the absolute path for consistent comparison
-                        abs_filepath = filepath.resolve()
+                        abs_filepath = str(filepath.resolve())
 
                         # Determine if file needs processing based on modification time
                         current_mtime = filepath.stat().st_mtime
+                        # Use .get() to safely retrieve the mtime, defaulting to None if key doesn't exist
                         previously_processed_mtime = processed_files.get(
                             str(abs_filepath))
 
-                        # Check if file is new or has been modified since last processing
-                        if abs_filepath not in processed_files or current_mtime > previously_processed_mtime:
+                        print(
+                            f"DEBUG: File {abs_filepath}, Current mtime: {current_mtime}, Stored mtime: {previously_processed_mtime}")
+
+                        # Check if file is new (not in log) or has been modified since last processing (mtime in log is older)
+                        # If previously_processed_mtime is None, it means the file wasn't in the log, so it's new.
+                        if previously_processed_mtime is None or current_mtime > previously_processed_mtime:
                             print(
                                 f"Processing new/modified file: {abs_filepath}")
                             if process_document(indexing_collection, str(abs_filepath)):
