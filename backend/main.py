@@ -11,6 +11,8 @@ from prompts import get_base_instruction, is_value_question, get_language_instru
 import httpx
 from collections import defaultdict
 import time
+from pathlib import Path
+import json
 
 app = FastAPI()
 load_dotenv()
@@ -69,6 +71,11 @@ app.add_middleware(
 # This prevents accidental re-indexing
 ALLOW_INDEXING = os.getenv("ALLOW_INDEXING", "false").lower() == "true"
 
+PROCESSED_FILES_LOG = "./processed_files.json"
+# Path to the challenge data folder
+DATA_ROOT_DIR = "./Material_GreenHorizon"
+
+
 if ALLOW_INDEXING:
     print("⚠️ Indexing endpoint is ENABLED. Ensure this is intentional.")
     # Global variable for the collection used by the indexing endpoint
@@ -86,19 +93,69 @@ if ALLOW_INDEXING:
             documents_path = ".documents"
             indexed_count = 0
 
-            if os.path.exists(documents_path):
-                for filename in os.listdir(documents_path):
-                    full_path = os.path.join(documents_path, filename)
-                    if os.path.isdir(full_path):
-                        # To Do
-                        return
-            print(f"Indexing complete. Processed {indexed_count} files.")
-            return {"detail": f"Indexed {indexed_count} documents successfully."}
+            # Load the log of previously processed files
+            processed_files = {}
+            if os.path.exists(PROCESSED_FILES_LOG):
+                try:
+                    with open(PROCESSED_FILES_LOG, 'r', encoding='utf-8') as f:
+                        processed_files = json.load(f)
+                        # Convert string keys (file paths) back to Path objects if necessary, or keep as strings
+                        # Assuming paths are stored as strings in the JSON
+                        # Normalize paths
+                        processed_files = {
+                            Path(k).resolve(): v for k, v in processed_files.items()}
+                except (json.JSONDecodeError, IOError) as e:
+                    print(
+                        f"Warning: Could not read {PROCESSED_FILES_LOG}, starting fresh. Error: {e}")
+                    processed_files = {}
+
+            # Walk through the DATA_ROOT_DIR recursively
+            if os.path.exists(DATA_ROOT_DIR):
+                print(
+                    f"Scanning directory '{DATA_ROOT_DIR}' for new/modified files...")
+                for root, dirs, files in os.walk(DATA_ROOT_DIR):
+                    for file in files:
+                        filepath = Path(root) / file
+                        # Use .resolve() to get the absolute path for consistent comparison
+                        abs_filepath = filepath.resolve()
+
+                        # Determine if file needs processing based on modification time
+                        current_mtime = filepath.stat().st_mtime
+                        previously_processed_mtime = processed_files.get(
+                            str(abs_filepath))
+
+                        # Check if file is new or has been modified since last processing
+                        if abs_filepath not in processed_files or current_mtime > previously_processed_mtime:
+                            print(
+                                f"Processing new/modified file: {abs_filepath}")
+                            if process_document(indexing_collection, str(abs_filepath)):
+                                # Update the log with the new modification time
+                                processed_files[str(
+                                    abs_filepath)] = current_mtime
+                                indexed_count += 1
+                            else:
+                                print(f"Failed to process {abs_filepath}")
+                        else:
+                            print(
+                                f"Skipping already processed file (up to date): {abs_filepath}")
+            else:
+                print(
+                    f"Directory '{DATA_ROOT_DIR}' not found. No files to index.")
+                return {"detail": f"Directory '{DATA_ROOT_DIR}' not found. No files indexed."}
+
+            # Save the updated log of processed files
+            with open(PROCESSED_FILES_LOG, 'w', encoding='utf-8') as f:
+                # Convert Path keys back to strings for JSON serialization
+                json.dump({str(k): v for k, v in processed_files.items()},
+                          f, ensure_ascii=False, indent=4)
+
+            print(
+                f"Indexing complete. Processed {indexed_count} new/modified files.")
+            return {"detail": f"Indexed {indexed_count} new/modified documents successfully."}
         except Exception as e:
             print(f"Error during indexing: {e}")
             raise HTTPException(
                 status_code=500, detail=f"Indexing failed: {str(e)}")
-
 # Global ChromaDB collection
 chroma_collection = None
 

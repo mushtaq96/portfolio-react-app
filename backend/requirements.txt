@@ -12,3 +12,15 @@ pytest-mock
 reportlab
 groq
 python-docx
+# dependencies for multimodal parsing
+PyMuPDF          # For PDF parsing (often better than PyPDF2 for complex docs)
+python-pptx      # For PowerPoint files
+easyocr          # For OCR on images
+pandas           # For CSV, XLSX
+openpyxl         # For XLSX (optional, pandas uses it)
+PyYAML           # For YAML files
+pylatexenc       # For basic LaTeX processing 
+email-validator  # For email parsing (though built-in 'email' module often suffices)
+# Potentially useful for complex parsing
+unstructured[all-pdf] # Alternative to PyMuPDF, handles many formats
+python-magic # To detect file types more reliably if needed

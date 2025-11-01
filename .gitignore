@@ -41,9 +41,13 @@ htmlcov/
 
 # ChromaDB persistent storage
 backend/.chroma_db/
+backend/chroma_db/chroma.sqlite3
 
 # Document storage
 # backend/.documents/
 
 # Environment variables file
 .env
+
+*/Data challenge material.zip
+*/Material_GreenHorizon/
