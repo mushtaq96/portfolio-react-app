@@ -13,6 +13,7 @@ from collections import defaultdict
 import time
 from pathlib import Path
 import json
+from datetime import datetime
 
 app = FastAPI()
 load_dotenv()
@@ -127,8 +128,8 @@ if ALLOW_INDEXING:
                             str(abs_filepath))
 
                         print(
-                            f"DEBUG: File {abs_filepath}, Current mtime: {current_mtime}, Stored mtime: {previously_processed_mtime}")
-
+                            f"DEBUG: File {abs_filepath}, Current mtime: {current_mtime} ({datetime.fromtimestamp(current_mtime)}), Stored mtime: {previously_processed_mtime} ({datetime.fromtimestamp(previously_processed_mtime) if previously_processed_mtime else 'None'})"
+                        )
                         # Check if file is new (not in log) or has been modified since last processing (mtime in log is older)
                         # If previously_processed_mtime is None, it means the file wasn't in the log, so it's new.
                         if previously_processed_mtime is None or current_mtime > previously_processed_mtime:
