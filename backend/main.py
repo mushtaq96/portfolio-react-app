@@ -194,6 +194,127 @@ class ChatInput(BaseModel):
     language: str = "en"
 
 
+async def process_rag_query(query: str, language: str = "en"):
+    """Process a query using Retrieval-Augmented Generation"""
+    global chroma_collection, groq_client
+
+    if groq_client is None:
+        raise HTTPException(
+            status_code=500,
+            detail="Groq API client not initialized."
+        )
+
+    if chroma_collection is None:
+        raise HTTPException(
+            status_code=500,
+            detail="ChromaDB collection not initialized."
+        )
+
+    context_text = ""
+    try:
+        results = chroma_collection.query(
+            query_texts=[query],
+            n_results=7
+        )
+
+        if results and 'documents' in results and results['documents'] and 'metadatas' in results:
+            retrieved_docs = results['documents'][0]
+            retrieved_metadatas = results['metadatas'][0]
+            context_text = "\n".join(retrieved_docs)
+            # retrieved_metadatas can be used for debugging if needed
+            print("DEBUG RAG - Retrieved Chunks for batch QA:")
+            for i, (chunk, meta) in enumerate(zip(retrieved_docs, retrieved_metadatas)):
+                print(
+                    f"  Chunk {i}: Source: {meta.get('source_doc', 'Unknown')}, File: {meta.get('file_path', 'Unknown')}, Content Start: {chunk[:100]}...")
+        else:
+            context_text = "No relevant information found in the knowledge base."
+
+        base_instruction = get_base_instruction()
+        language_instruction = get_language_instruction(language)
+
+        full_prompt = f"""{base_instruction}
+{language_instruction}
+
+Context:
+{context_text}
+
+Question:
+{query}
+
+Answer:"""
+
+        chat_completion = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": full_prompt}],
+            model="llama-3.1-8b-instant",
+            temperature=0.5,
+            max_tokens=500,
+            top_p=0.9,
+            stream=False,
+        )
+
+        return chat_completion.choices[0].message.content.strip()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing query: {str(e)}"
+        )
+
+
+@app.post("/api/batch-qa")
+async def batch_qa():
+    """Run a batch of sample questions against the RAG system and return results in the required JSON format."""
+    global chroma_collection, groq_client
+
+    if groq_client is None:
+        raise HTTPException(
+            status_code=500, detail="Groq API client not initialized.")
+
+    if chroma_collection is None:
+        raise HTTPException(
+            status_code=500, detail="ChromaDB collection not initialized.")
+
+    # Define the sample questions and their expected IDs
+    sample_questions = [
+        {"id": 1, "question": "List all projects that exist in the company, including past, current, and planned ones."},
+        {"id": 2, "question": "What is EcoFlex?"},
+        {"id": 3, "question": "Who is working on the Ecoflex weekly report?"},
+        {"id": 4, "question": "What are the different elements of the Ecoflex app interface?"},
+        {"id": 5, "question": "Who is Camille and what is she working on?"},
+        {"id": 6, "question": "Give me all emails sent by Camille."},
+        {"id": 7, "question": "In which file is the summary of Aisha's and Nils' meeting?"},
+        {"id": 8, "question": "Who won the game at the winter retreat?"},
+        {"id": 9, "question": "What are the main features and goals of the EcoFlex app?"},
+        {"id": 10, "question": "What is the latest product launched by GreenHorizon?"},
+        {"id": 11, "question": "On List the freelance or consulting contributors to GreenHorizon’s projects."},
+        {"id": 12, "question": "What is Nils Jörgensen’s role?"},
+        {"id": 13, "question": "When was the poll for choosing the winter retreat location held?"},
+    ]
+
+    results = []
+    for item in sample_questions:
+        question_id = item["id"]
+        question_text = item["question"]
+        print(f"Processing question {question_id}: {question_text}")
+
+        # --- Reuse the RAG logic from the /api/chat endpoint ---
+        response_text = await process_rag_query(question_text, language="en")
+        results.append({
+            "question_id": "Q" + str(question_id),
+            "question": question_text,
+            "answer": response_text
+        })
+
+    # Save results to submission.json
+    try:
+        with open('submission.json', 'w', encoding='utf-8') as f:
+            json.dump(results, f, ensure_ascii=False, indent=4)
+        print("Results saved successfully to submission.json")
+    except Exception as e:
+        print(f"Error saving results to submission.json: {str(e)}")
+
+    return {"results": results}
+
+
 @app.post("/api/chat")
 async def chat(input: ChatInput):
     """Handle chat messages with RAG and LLM."""
