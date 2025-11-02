@@ -1,54 +1,27 @@
 # backend/prompts.py
-def get_base_instruction(is_value_question=False):
-    """Get base instruction with clear focus guidance"""
-    if is_value_question:
-        return """You are an AI assistant representing Mushtaq Bokhari. 
-            Answer using ONLY the information provided in the 'Context' section below.
-            PRIMARY FOCUS: Full-stack development expertise and cloud solutions.
-            SECONDARY MENTION: Additional competencies including DevOps experience.
-            When asked specifically about DevOps, acknowledge the 4-year experience but clarify it's supporting expertise.
-            Focus on market value, competitive advantages, and IT sector demands.
-            Be concise and professional."""
-    else:
-        return """You are an AI assistant representing Mushtaq Bokhari. 
-            Answer using ONLY the information provided in the 'Context' section below.
-            PRIMARY FOCUS: Full-stack development expertise.
-            SECONDARY MENTION: Additional skills including DevOps.
-            When asked specifically about DevOps, acknowledge the 4-year experience but clarify it's supporting expertise.
-            Be concise and professional."""
+
+def get_base_instruction():
+    """Get base instruction for the Argusa AI Challenge bot."""
+    # Focus solely on answering questions based on the provided context from GreenHorizon documents.
+    # Emphasize extracting specific details like names, roles, file locations, etc., when relevant.
+    return """You are an AI assistant designed to answer questions based on the GreenHorizon company documents provided in the 'Context' section below.
+            Your answers should be accurate, concise, and directly derived from the information contained within the context.
+            When asked to list items (e.g., projects, people, files), provide a clear, structured list based on the context.
+            When asked about specific individuals, roles, or file locations, extract and state them clearly if present in the context.
+            If the context does not contain sufficient information to answer the question, state so clearly.
+            Do not fabricate information or rely on prior knowledge outside the provided context.
+            Format your answer appropriately (e.g., use line breaks for lists)."""
 
 
-def is_devops_question(query):
-    """Detect specific DevOps-related questions"""
-    devops_keywords = [
-        "devops", "kubernetes", "docker", "ci/cd", "terraform", "jenkins",
-        "pipeline", "infrastructure", "deployment", "automation", "ansible",
-        "4 years devops", "devops experience"
-    ]
-    return any(keyword in query.lower() for keyword in devops_keywords)
-
-def is_value_question(query):
-    """Detect if query is asking about value/market relevance"""
-    keywords = [
-        "value", "benefit", "contribution", "worth", "bring", "demand", 
-        "mehrwert", "beitrag", "wert", "bringen", "nachfrage", "vorteil",
-        "market", "markt", "shortage", "engpass", "shortage", "it shortage",
-        "warum", "why should", "competitive", "advantage", "unique"
-    ]
-    return any(keyword in query.lower() for keyword in keywords)
-
-def get_language_instruction(language, is_devops_question=False):
-    """Get language-specific instruction"""
+def get_language_instruction(language):
+    """Get language-specific instruction (if needed, though context is likely English)."""
+    # For now, assume context and answers are in English.
+    # This could be adapted if multilingual documents/questions are introduced.
     if language == 'en':
-        if is_devops_question:
-            return "The user asked specifically about DevOps. Acknowledge the 4-year DevOps experience as supporting expertise, not primary focus. Answer in English ONLY."
-        return "The user asked in English. Please answer the user's question based on the provided context and provide the response in English ONLY. Do not mix languages."
-    elif language == 'de':
-        if is_devops_question:
-            return "Der Benutzer hat speziell nach DevOps gefragt. Bestätigen Sie die 4-jährige DevOps-Erfahrung als ergänzende Expertise, nicht als Hauptschwerpunkt. Antworten Sie auf Deutsch."
-        return "Der Benutzer hat auf Deutsch gefragt. Bitte antworten Sie auf Deutsch und vermischen Sie keine Sprachen."
+        return "Please provide your answer in English based on the context."
+    # Add other languages if required later
+    # elif language == 'de':
+    #    return "Bitte beantworten Sie die Frage auf Deutsch basierend auf dem Kontext."
     else:
-        return ""
-
-
-# initiate deployment to render
+        # Default to English if language is unknown or not specified
+        return "Please provide your answer in English based on the context."

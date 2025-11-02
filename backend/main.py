@@ -7,7 +7,7 @@ from typing import List
 import chromadb
 from groq import Groq
 from dotenv import load_dotenv
-from prompts import get_base_instruction, is_value_question, get_language_instruction
+from prompts import get_base_instruction, get_language_instruction
 import httpx
 from collections import defaultdict
 import time
@@ -265,16 +265,28 @@ async def chat(input: ChatInput):
                 query_texts=[user_query], n_results=3)
 
         # Extract and concatenate retrieved chunks
-        if results and 'documents' in results and results['documents']:
-            retrieved_chunks = results['documents'][0]
-            context_text = "\n\n".join(retrieved_chunks)
+        # Added check for metadatas
+        if results and 'documents' in results and results['documents'] and 'metadatas' in results and results['metadatas']:
+            # Get the list of retrieved text chunks
+            retrieved_docs = results['documents'][0]  # The actual text chunks
+            # Get the list of corresponding metadatas
+            retrieved_metadatas = results['metadatas'][0]  # The metadata dicts
+            print("DEBUG RAG - Retrieved Chunks:")
+            # Corrected variable names
+            for i, (chunk, meta) in enumerate(zip(retrieved_docs, retrieved_metadatas)):
+                # Print first 100 chars of chunk and source info
+                print(
+                    f"  Chunk {i}: Source: {meta.get('source_doc', 'Unknown')}, File: {meta.get('file_path', 'Unknown')}, Content Start: {chunk[:100]}...")  # Use 'chunk' for content
+            # Join the DOCUMENTS (text chunks), not the metadatas
+            context_text = "\n".join(retrieved_docs)  # Corrected variable name
             print(
                 f"Retrieved context (first 200 chars): {context_text[:200]}...")
         else:
+            print("DEBUG RAG - No documents retrieved by ChromaDB query.")
             context_text = "No relevant information found in the knowledge base."
 
         # Build enhanced prompt using prompts.py
-        base_instruction = get_base_instruction(is_value_question(user_query))
+        base_instruction = get_base_instruction()
         language_instruction = get_language_instruction(user_language)
 
         full_prompt = f"""{base_instruction}
