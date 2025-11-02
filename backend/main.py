@@ -1,4 +1,5 @@
 # portfolio-react-app/backend/main.py
+import asyncio
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -243,16 +244,26 @@ Question:
 
 Answer:"""
 
-        chat_completion = groq_client.chat.completions.create(
-            messages=[{"role": "user", "content": full_prompt}],
-            model="llama-3.1-8b-instant",
-            temperature=0.5,
-            max_tokens=500,
-            top_p=0.9,
-            stream=False,
-        )
+        retry_count = 0
+        max_retries = 3
+        while retry_count < max_retries:
+            try:
+                chat_completion = groq_client.chat.completions.create(
+                    messages=[{"role": "user", "content": full_prompt}],
+                    model="llama-3.1-8b-instant",
+                    temperature=0.5,
+                    max_tokens=500,
+                    top_p=0.9,
+                    stream=False,
+                )
 
-        return chat_completion.choices[0].message.content.strip()
+                return chat_completion.choices[0].message.content.strip()
+            except Exception as e:
+                print(
+                    f"⚠️ Error during chat completion (Attempt {retry_count + 1}): {e}")
+                retry_count += 1
+                await asyncio.sleep(1)  # Wait before retrying
+        print("❌ Max retries reached. Chat completion failed.")
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -278,16 +289,16 @@ async def batch_qa():
         {"id": 1, "question": "List all projects that exist in the company, including past, current, and planned ones."},
         {"id": 2, "question": "What is EcoFlex?"},
         {"id": 3, "question": "Who is working on the Ecoflex weekly report?"},
-        {"id": 4, "question": "What are the different elements of the Ecoflex app interface?"},
-        {"id": 5, "question": "Who is Camille and what is she working on?"},
-        {"id": 6, "question": "Give me all emails sent by Camille."},
-        {"id": 7, "question": "In which file is the summary of Aisha's and Nils' meeting?"},
-        {"id": 8, "question": "Who won the game at the winter retreat?"},
-        {"id": 9, "question": "What are the main features and goals of the EcoFlex app?"},
-        {"id": 10, "question": "What is the latest product launched by GreenHorizon?"},
-        {"id": 11, "question": "On List the freelance or consulting contributors to GreenHorizon’s projects."},
-        {"id": 12, "question": "What is Nils Jörgensen’s role?"},
-        {"id": 13, "question": "When was the poll for choosing the winter retreat location held?"},
+        # {"id": 4, "question": "What are the different elements of the Ecoflex app interface?"},
+        # {"id": 5, "question": "Who is Camille and what is she working on?"},
+        # {"id": 6, "question": "Give me all emails sent by Camille."},
+        # {"id": 7, "question": "In which file is the summary of Aisha's and Nils' meeting?"},
+        # {"id": 8, "question": "Who won the game at the winter retreat?"},
+        # {"id": 9, "question": "What are the main features and goals of the EcoFlex app?"},
+        # {"id": 10, "question": "What is the latest product launched by GreenHorizon?"},
+        # {"id": 11, "question": "On List the freelance or consulting contributors to GreenHorizon’s projects."},
+        # {"id": 12, "question": "What is Nils Jörgensen’s role?"},
+        # {"id": 13, "question": "When was the poll for choosing the winter retreat location held?"},
     ]
 
     results = []
