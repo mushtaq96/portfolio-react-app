@@ -1,67 +1,109 @@
-[
-    {
-        "question_id": "Q1",
-        "question": "List all projects that exist in the company, including past, current, and planned ones.",
-        "answer": "Based on the provided context, the following projects are mentioned:\n\n1. **EcoFlex Multi-Residential**\n   - This is a past project, as it is mentioned in the kickoff sync transcript from January 18, 2024.\n   - The project aimed to deliver a GDPR-compliant energy insights platform tailored for apartment buildings.\n\n2. **GreenHorizon Energy (unspecified project)**\n   - This is a current or planned project, as it is mentioned in the email from Javier Ramirez, Project Manager.\n   - The project has a timeline from May to August 2025 and involves tasks such as sensor specification, system architecture, and AI model architecture definition.\n\n3. **Pilot project (unspecified)**\n   - This is a current or planned project, as it is mentioned in the action items for Marco to scope backend requirements for the pilot by January 26.\n\n4. **RE-Source project**\n   - This is a current project, as it is mentioned in the PRESS & VISIBILITY section, where GreenHorizon is mentioned in a RE-Source recap blog post and a LinkedIn post tagged GreenHorizon.\n\n5. **TechGreen Suisse project**\n   - This is a current project, as it is mentioned in the PRESS & VISIBILITY section, where GreenHorizon is mentioned in a TechGreen Suisse scheduling article.\n\nNote that there may be other projects mentioned in the context, but these are the ones explicitly mentioned."
-    },
-    {
-        "question_id": "Q2",
-        "question": "What is EcoFlex?",
-        "answer": "EcoFlex is an intelligent backend + dashboard system designed for predictive energy optimization. It aims to reduce industrial energy waste by predicting load spikes, prioritizing clean sources in real-time, and providing operators with clear visual guidance to act or not act."
-    },
-    {
-        "question_id": "Q3",
-        "question": "Who is working on the Ecoflex weekly report?",
-        "answer": "Based on the provided context, the following individuals are working on the EcoFlex Weekly Report:\n\n1. Aisha (Data analysis and energy consumption predictions)\n2. Tomás (Backend development)\n\nAdditionally, Louis mentioned that Emma wants a functional version of the report by March 21, 2025."
-    },
-    {
-        "question_id": "Q4",
-        "question": "What are the different elements of the Ecoflex app interface?",
-        "answer": "Based on the provided context, the different elements of the EcoFlex app interface include:\n\n1. **Navigation Bar**: Floating with icons for Dashboard, Tips, Scorecard, and Alerts\n2. **Dashboard Cards**: Rounded corners, light drop shadow, responsive grid\n3. **Scorecard Tiles**: Dynamic icons, badge status indicator\n4. **Tip Carousel**: Swipeable, scroll hints with subtle motion\n5. **Light & Dark theme variants**: Based on user accessibility feedback\n6. **Energy predictions visualized via line charts and color-coded alerts**\n7. **Tiered notification indicators**: and a consistent iconography system"
-    },
-    {
-        "question_id": "Q5",
-        "question": "Who is Camille and what is she working on?",
-        "answer": "Camille is a member of the GreenHorizon team. \n\nShe is working on the following tasks:\n\n- Animating onboarding transitions (Action Item)\n- Finalizing badge sketches by July 5 (Next Action)\n- Creating a wireframe prototype for three challenge types (Next Action)\n- Designing a streak celebration modal (Animation & Microinteractions)\n- Cleaning up the badge system wireframes (End of Transcript)"
-    },
-    {
-        "question_id": "Q6",
-        "question": "Give me all emails sent by Camille.",
-        "answer": "Here are the emails sent by Camille:\n\n1. 2024-10-02: \n    - Subject: \n    - Content: Could we include visual activities like group sketching or a walk-with-a-theme session?\n\n2. 2024-10-21: \n    - Subject: \n    - Content: Final poll results are in. Leukerbad won for location and Feb 3–6 for dates. Will email full breakdown.\n\n3. 2024-12-01 is not an email sent by Camille."
-    },
-    {
-        "question_id": "Q7",
-        "question": "In which file is the summary of Aisha's and Nils' meeting?",
-        "answer": "Unfortunately, the provided context does not mention a specific file containing the summary of Aisha's and Nils' meeting. However, it is mentioned that Aisha will send a summary to Nils later that day."
-    },
-    {
-        "question_id": "Q8",
-        "question": "Who won the game at the winter retreat?",
-        "answer": "Based on the provided context, the scores for each participant are listed. To determine the winner, we need to find the participant with the highest total points.\n\nThe participants and their total points are:\n\n1. Camille - 25\n2. Freya - 29\n3. Tomás - 27\n4. Javier - 24\n5. Louis - 23\n6. Emma - 23\n7. Marco - 22\n8. Aisha - 21\n\nThe participant with the highest total points is Freya with 29 points. Therefore, Freya won the game at the winter retreat."
-    },
-    {
-        "question_id": "Q9",
-        "question": "What are the main features and goals of the EcoFlex app?",
-        "answer": "Based on the provided context, the main features and goals of the EcoFlex app are as follows:\n\n**Key Features:**\n\n1. Weekly Energy Challenges\n2. Badge Collection Mechanism\n3. Streak Tracker\n4. Scoreboard API Integration\n5. Challenge Fairness Algorithm\n\n**Goals:**\n\n1. Boost user engagement with EcoFlex Home\n2. Leverage gamification to foster sustainable behaviors\n3. Align launch with Q4 Beta release timeline\n\nThese features and goals aim to turn energy awareness into a habit-forming experience through meaningful interaction, as stated by Emma Dubois in the Kickoff Meeting Notes."
-    },
-    {
-        "question_id": "Q10",
-        "question": "What is the latest product launched by GreenHorizon?",
-        "answer": "EcoFlex is the latest product launched by GreenHorizon. It is a predictive platform to optimize energy usage, reduce peak demand, and empower sustainable decision-making through intelligent insights."
-    },
-    {
-        "question_id": "Q11",
-        "question": "On List the freelance or consulting contributors to GreenHorizon’s projects.",
-        "answer": "Unfortunately, the provided context does not contain sufficient information to list freelance or consulting contributors to GreenHorizon's projects.\n\nHowever, it does mention the following individuals who are not explicitly labeled as employees or co-founders:\n\n- Javier Ramirez (Facilitator of the GreenHorizon Retreat 2025 – Day 1 Opening Circle)\n- Luca Keller (accepted an offer from Emma Dubois, but the nature of the offer is not specified)\n\nIt's also worth noting that the context mentions the following individuals as part of the team, but their roles are not explicitly stated as freelance or consulting contributors:\n\n- Aisha\n- Camille\n- Elena (Dr. Elena Petrovic, co-founder)\n- Emma (Emma Dubois, CEO & Co-Founder)\n- Freya\n- Louis\n- Mar\n- Tomás"
-    },
-    {
-        "question_id": "Q12",
-        "question": "What is Nils Jörgensen’s role?",
-        "answer": "Unfortunately, the context does not contain sufficient information to answer the question about Nils Jörgensen's role."
-    },
-    {
-        "question_id": "Q13",
-        "question": "When was the poll for choosing the winter retreat location held?",
-        "answer": "I couldn't find any information about a poll for choosing the winter retreat location in the provided context."
-    }
-]
+{
+    "participant_id": "SM Mushtaq Bokhari",
+    "answers": [
+        {
+            "question_id": "Q1",
+            "answer": "EcoFlex Multi-Residential:\n- Deliver a GDPR-compliant energy insights platform tailored for apartment buildings.\n- Empower tenants with actionable energy data, while optimizing shared infrastructure usage.\n- Conduct real-world pilot in Lausanne (18-unit complex) by May 2024.\n\nAquaSentinel: Environmental R&D (no details provided in the context)\n\nGreenHorizon Energy (no specific project mentioned, but a company name)\n\nNo relevant information found about other projects."
+        },
+        {
+            "question_id": "Q2",
+            "answer": "EcoFlex is an intelligent backend and dashboard system designed to predict load spikes using anomaly detection, prioritize clean sources in real-time, and provide operators with clear visual guidance to act or not act, ultimately optimizing energy consumption and reducing waste."
+        },
+        {
+            "question_id": "Q3",
+            "answer": "Aisha is leading the EcoFlex Weekly Report project, responsible for delivering a functional first version by Friday, March 21, 2025. Her project team includes Aisha (Data analysis and energy consumption predictions), Tomás (Backend), and possibly others, as the project scope mentions integrating personalized recommendations and providing a clear and visual format as a PDF report and summary email."
+        },
+        {
+            "question_id": "Q4",
+            "answer": "The different elements of the Ecoflex app interface include:\n\nDashboard Cards: \n- Rounded corners, light drop shadow, responsive grid\n\nScorecard Tiles: \n- Dynamic icons, badge status indicator\n\nTip Carousel: \n- Swipeable, scroll hints with subtle motion\n\nNavigation Bar: \n- Floating with icons for Dashboard, Tips, Scorecard, and Alerts\n\nAlerts: \n- Info Blue, Warning Orange, Urgent Red\n\nHome Screen: \n- Visualized energy predictions via line charts and color-coded alerts\n\nUI adjustments for both low-tech and experienced users \n\nLight & Dark theme variants based on user accessibility feedback \n\nTiered notification indicators and a consistent iconography system"
+        },
+        {
+            "question_id": "Q5",
+            "answer": "Camille is a team member at GreenHorizon who is working on animating onboarding transitions, prototyping top nav + dashboard cards, finalizing badge sketches by July 5, and creating a wireframe prototype for the Home Gamification Layer with Freya and Luca. She is also involved in discussions about the design of the energy report, specifically focusing on creating a narrative flow and a headline news section that ties back to the project's idea of having a cohesive user experience. Additionally, she is considering the design tension between empowerment and surveillance in the context of predictive features, and is exploring ideas for badges, streaks, and energy \"challenges\" for the gamification layer."
+        },
+        {
+            "question_id": "Q6",
+            "answer": "- Camille: First impressions checklist distributed for onboarding feedback (filename: not specified, folder: not specified)\n- Camille: Final poll results are in. Leukerbad won for location and Feb 3–6 for dates. Will email full breakdown. (filename: not specified, folder: not specified)\n- Camille: Could we include visual activities like group sketching or a walk-with-a-theme session? (filename: not specified, folder: not specified)\n- Camille: Final poll results are in. Leukerbad won for location and Feb 3–6 for dates. Will email full breakdown. (filename: not specified, folder: not specified)\n- Camille: Proposed priorities so everyone can review them ahead of our follow-up meeting. (filename: not specified, folder: not specified)"
+        },
+        {
+            "question_id": "Q7",
+            "answer": "No relevant information found."
+        },
+        {
+            "question_id": "Q8",
+            "answer": "Freya won the game at the winter retreat with a total of 29 points."
+        },
+        {
+            "question_id": "Q9",
+            "answer": "The main features and goals of the EcoFlex app include:\n\n- Live energy prediction charts with confidence shading.\n- Tiered push/in-app notifications with fallback.\n- Theme switching, error handling, cross-device support.\n- Weekly Energy Challenges.\n- Badge Collection Mechanism.\n- Streak Tracker.\n- Scoreboard API Integration.\n- Challenge Fairness Algorithm.\n- Smart device integration & automation options.\n- User preference learning for personalized tips.\n- Real-time WebSocket updates & analytics dashboard.\n\nThe goals of the EcoFlex app are to turn energy awareness into a habit-forming experience through meaningful interaction, boost user engagement with EcoFlex Home, leverage gamification to foster sustainable behaviors, and align the launch with Q4 Beta release timeline."
+        },
+        {
+            "question_id": "Q10",
+            "answer": "EcoFlex: a predictive platform to optimize energy usage, reduce peak demand, and empower sustainable decision-making through intelligent insights."
+        },
+        {
+            "question_id": "Q11",
+            "answer": "No relevant information found."
+        },
+        {
+            "question_id": "Q12",
+            "answer": "No relevant information found."
+        },
+        {
+            "question_id": "Q13",
+            "answer": "No relevant information found."
+        },
+        {
+            "question_id": "Q14",
+            "answer": "GreenHorizon Energy was founded on 26 September 2022, in Lausanne, Canton of Vaud, Switzerland, by Emma Dubois and Dr. Elena Petrovic."
+        },
+        {
+            "question_id": "Q15",
+            "answer": "CHF 400,000 for product development, pilot deployments, and team growth."
+        },
+        {
+            "question_id": "Q16",
+            "answer": "EcoFlex Multi-Residential:\n- Deliver a GDPR-compliant energy insights platform tailored for apartment buildings.\n- Empower tenants with actionable energy data, while optimizing shared infrastructure usage.\n- Conduct real-world pilot in Lausanne (18-unit complex) by May 2024.\n\nNo other projects were mentioned as having reported work activity on March 12, 2025."
+        },
+        {
+            "question_id": "Q17",
+            "answer": "No relevant information found regarding recent employee hires."
+        },
+        {
+            "question_id": "Q18",
+            "answer": "The team members working on the EcoFlex app concept are:\n\nLuca Keller – Mobile App Developer:\n- Research and choose a suitable cross-platform framework (React Native selected).\n- Set up project structure and Git repository.\n- Develop a minimum viable UI and implement navigation.\n- Integrate energy predictions and set up notifications.\n- Conduct basic app functionality testing.\n\nFreya Nielsen – UX/UI Designer:\n- Conduct rapid user research and interviews.\n- Create wireframes and high-fidelity mockups.\n- Define UI specifications and test designs with users.\n- Collaborate on onboarding and dark mode interface.\n- Provide assets and design guidance to development.\n\nMarco Rossi – Backend Developer:\n- Set up REST API backend service (Node.js, MongoDB).\n- Integrate with the prediction algorithm (via data science team).\n- Implement endpoints for predictions, etc.\n\nJavier Ramirez – Project Manager: \n- Presented the EcoFlex App PoC Demo.\n\nAdditionally, the following team members contributed to the project at different stages:\n\nCamille Fontaine – UI & Animation Designer\nTomás García – Backend Developer\nAisha Rahman – Data Scientist\nClaire Tschudi – QA & Product Coordination\nEmma Dubois – CEO\nElena Petrovic – Algorithm Lead\nLouis Meyer – Project Manager"
+        },
+        {
+            "question_id": "Q19",
+            "answer": "Luca Keller is a 30-year-old Swiss Mobile App Developer with a strong background in Computer Science from ETH Zurich. He is currently working on the EcoFlex Home project as a Mobile Developer, focusing on building the core app structure and rapid prototyping interactive features."
+        },
+        {
+            "question_id": "Q20",
+            "answer": "ProjectLeukerbad Retreat Center:\n- Venue confirmed. 12 rooms booked, dietary needs passed along.\n\nJavier.ramirez@greenhorizon.energy  \nGrateful for the depth and the laughter. We should bottle that combo and sell it.\n\n2024-09-18\njavier.ramirez: I’ll take first stab at a modular agenda draft. Input welcome.\n\n2024-12-01\njavier.ramirez: Draft agenda uploaded. Modular blocks + wellness time included. Feedback welcome before final \n\n2024-12-01\nJavier: Right.\n\n[GreenHorizon Retreat 2025 – Day 1 Opening Circle]\nDate: February 3, 2025\nFacilitator: Javier Ramirez"
+        },
+        {
+            "question_id": "Q21",
+            "answer": "The EcoFlex Weekly Report is a system that generates an automated weekly report for users, summarizing energy consumption, peak usage, optimization impact, and personalized recommendations. The goal is to make it useful and actionable, not just another email people ignore. The report will provide a clear and visual format as a PDF report and summary email, accessible via the EcoFlex platform."
+        },
+        {
+            "question_id": "Q22",
+            "answer": "Louis led the kick-off for the EcoFlex weekly report project."
+        },
+        {
+            "question_id": "Q23",
+            "answer": "EcoFlex Weekly Report:\n- Weekly energy consumption trends\n- Peak usage breakdown\n- AI-generated insights and recommendations"
+        },
+        {
+            "question_id": "Q24",
+            "answer": "https://dashboard.greenhorizon.com/preview/ecoflex-v1"
+        },
+        {
+            "question_id": "Q25",
+            "answer": "No relevant information found."
+        },
+        {
+            "question_id": "Q26",
+            "answer": "Project: EcoFlex Multi-Residential:\n- Dataset: 50 synthetic buildings × 20 units each (1,000 tenants)"
+        }
+    ]
+}

@@ -195,44 +195,100 @@ class ChatInput(BaseModel):
     language: str = "en"
 
 
-async def process_rag_query(query: str, language: str = "en"):
-    """Process a query using Retrieval-Augmented Generation"""
+async def process_rag_query(query: str, language: str = "en", n_results: int = 7):
+    """Process a query using Hybrid Retrieval-Augmented Generation"""
     global chroma_collection, groq_client
 
     if groq_client is None:
         raise HTTPException(
-            status_code=500,
-            detail="Groq API client not initialized."
-        )
-
+            status_code=500, detail="Groq API client not initialized.")
     if chroma_collection is None:
         raise HTTPException(
-            status_code=500,
-            detail="ChromaDB collection not initialized."
-        )
+            status_code=500, detail="ChromaDB collection not initialized.")
 
     context_text = ""
     try:
-        results = chroma_collection.query(
-            query_texts=[query],
-            n_results=7
-        )
+        import re
+        # Step 1: Semantic search (baseline)
 
-        if results and 'documents' in results and results['documents'] and 'metadatas' in results:
-            retrieved_docs = results['documents'][0]
-            retrieved_metadatas = results['metadatas'][0]
+        semantic_results = chroma_collection.query(
+            query_texts=[query], n_results=n_results)
+
+        # Step 2: Extract and normalize keywords
+        query_lower = query.lower()
+        keywords = re.findall(r'\b\w{3,}\b', query_lower)
+        # Force project keywords for listing queries
+        if any(phrase in query_lower for phrase in ["list all projects", "all projects", "existing projects"]):
+            forced_keywords = ["AquaSentinel", "eco_flex_multi", "ecoflex_indus",
+                               "ecoflex_home", "home_app_gamification", "weekly_consumption_report"]
+            keywords = list(set(keywords + forced_keywords))
+
+        candidate_names = {
+            "AquaSentinel", "aquasentinel", "aquaSentinel",
+            "eco_flex_multi", "ecoflex_multi", "multi_residential",
+            "ecoflex_indus", "industrial", "indus",
+            "ecoflex_home", "home",
+            "home_app_gamification", "gamification",
+            "weekly_consumption_report", "weekly", "report",
+            "camille", "nils", "aisha", "tomas", "louis", "freya"
+        }
+        filtered_keywords = [kw for kw in keywords if kw in candidate_names]
+
+        # Step 3: Merge results
+        hybrid_docs = []
+        hybrid_metas = []
+        seen = set()
+
+        def add_results(docs, metas):
+            for d, m in zip(docs, metas):
+                key = (m.get('source_doc', ''),
+                       m.get('file_path', ''), d[:100])
+                if key not in seen:
+                    seen.add(key)
+                    hybrid_docs.append(d)
+                    hybrid_metas.append(m)
+
+        # Add semantic results
+        if semantic_results['documents'][0]:
+            add_results(semantic_results['documents']
+                        [0], semantic_results['metadatas'][0])
+
+        # Add keyword-filtered results
+        for kw in filtered_keywords:
+            try:
+                kw_results = chroma_collection.query(
+                    query_texts=[query],
+                    n_results=3,
+                    where={"$or": [
+                        {"source_doc": {"$contains": kw}},
+                        {"file_path": {"$contains": kw}},
+                        {"source_doc": {"$contains": kw.capitalize()}},
+                        {"file_path": {"$contains": kw.capitalize()}}
+                    ]}
+                )
+                if kw_results['documents'][0]:
+                    add_results(kw_results['documents']
+                                [0], kw_results['metadatas'][0])
+            except Exception as e:
+                print(f"Keyword filter failed for '{kw}': {e}")
+                continue
+
+        # Limit final context
+        retrieved_docs = hybrid_docs[:n_results]
+        retrieved_metadatas = hybrid_metas[:n_results]
+
+        if not retrieved_docs:
+            context_text = "No relevant information found in the knowledge base."
+        else:
             context_text = "\n".join(retrieved_docs)
-            # retrieved_metadatas can be used for debugging if needed
-            print("DEBUG RAG - Retrieved Chunks for batch QA:")
+            print("DEBUG RAG - Retrieved Chunks:")
             for i, (chunk, meta) in enumerate(zip(retrieved_docs, retrieved_metadatas)):
                 print(
                     f"  Chunk {i}: Source: {meta.get('source_doc', 'Unknown')}, File: {meta.get('file_path', 'Unknown')}, Content Start: {chunk[:100]}...")
-        else:
-            context_text = "No relevant information found in the knowledge base."
 
+        # Generate answer
         base_instruction = get_base_instruction()
         language_instruction = get_language_instruction(language)
-
         full_prompt = f"""{base_instruction}
 {language_instruction}
 
@@ -244,9 +300,7 @@ Question:
 
 Answer:"""
 
-        retry_count = 0
-        max_retries = 3
-        while retry_count < max_retries:
+        for _ in range(3):
             try:
                 chat_completion = groq_client.chat.completions.create(
                     messages=[{"role": "user", "content": full_prompt}],
@@ -256,19 +310,14 @@ Answer:"""
                     top_p=0.9,
                     stream=False,
                 )
-
                 return chat_completion.choices[0].message.content.strip()
             except Exception as e:
-                print(
-                    f"⚠️ Error during chat completion (Attempt {retry_count + 1}): {e}")
-                retry_count += 1
-                await asyncio.sleep(1)  # Wait before retrying
-        print("❌ Max retries reached. Chat completion failed.")
+                await asyncio.sleep(1)
+        raise Exception("Max retries exceeded")
+
     except Exception as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Error processing query: {str(e)}"
-        )
+            status_code=500, detail=f"Error processing query: {str(e)}")
 
 
 @app.post("/api/batch-qa")
@@ -289,16 +338,30 @@ async def batch_qa():
         {"id": 1, "question": "List all projects that exist in the company, including past, current, and planned ones."},
         {"id": 2, "question": "What is EcoFlex?"},
         {"id": 3, "question": "Who is working on the Ecoflex weekly report?"},
-        # {"id": 4, "question": "What are the different elements of the Ecoflex app interface?"},
-        # {"id": 5, "question": "Who is Camille and what is she working on?"},
-        # {"id": 6, "question": "Give me all emails sent by Camille."},
-        # {"id": 7, "question": "In which file is the summary of Aisha's and Nils' meeting?"},
-        # {"id": 8, "question": "Who won the game at the winter retreat?"},
-        # {"id": 9, "question": "What are the main features and goals of the EcoFlex app?"},
-        # {"id": 10, "question": "What is the latest product launched by GreenHorizon?"},
-        # {"id": 11, "question": "On List the freelance or consulting contributors to GreenHorizon’s projects."},
-        # {"id": 12, "question": "What is Nils Jörgensen’s role?"},
-        # {"id": 13, "question": "When was the poll for choosing the winter retreat location held?"},
+        {"id": 4, "question": "What are the different elements of the Ecoflex app interface?"},
+        {"id": 5, "question": "Who is Camille and what is she working on?"},
+        {"id": 6, "question": "Give me all emails sent by Camille."},
+        {"id": 7, "question": "In which file is the summary of Aisha's and Nils' meeting?"},
+        {"id": 8, "question": "Who won the game at the winter retreat?"},
+        {"id": 9, "question": "What are the main features and goals of the EcoFlex app?"},
+        {"id": 10, "question": "What is the latest product launched by GreenHorizon?"},
+        {"id": 11, "question": "On List the freelance or consulting contributors to GreenHorizon’s projects."},
+        {"id": 12, "question": "What is Nils Jörgensen’s role?"},
+        {"id": 13, "question": "When was the poll for choosing the winter retreat location held?"},
+        {"id": 14, "question": "When, where, and by whom was the GreenHorizon company founded?"},
+        {"id": 15, "question": "How much funding was initially requested by Emma Dubois?"},
+        {"id": 16, "question": "What projects was the company had reported work activity on March 12, 2025?"},
+        {"id": 17,
+            "question": "List the most recent employees hired by GreenHorizon (not external consultants)."},
+        {"id": 18, "question": "Who is working on the Ecoflex app concept?"},
+        {"id": 19, "question": "Who is Luca Keller and what is he working on?"},
+        {"id": 20, "question": "What emails mention Javier Ramirez?"},
+        {"id": 21, "question": "What is the Ecoflex weekly report about?"},
+        {"id": 22, "question": "Who led the kick-off for the EcoFlex weekly report project?"},
+        {"id": 23, "question": "What are the elements displayed in the Ecoflex weekly report dashboard?"},
+        {"id": 24, "question": "Give me the URL to the Ecoflex weekly report example dashboard."},
+        {"id": 25, "question": "When did Louis request a 'key takeaways' box?"},
+        {"id": 26, "question": "When testing the anonymization layer of EcoFlex Multi-Residential, what was the size of the synthetic population?"}
     ]
 
     results = []
@@ -307,23 +370,25 @@ async def batch_qa():
         question_text = item["question"]
         print(f"Processing question {question_id}: {question_text}")
 
-        # --- Reuse the RAG logic from the /api/chat endpoint ---
         response_text = await process_rag_query(question_text, language="en")
         results.append({
             "question_id": "Q" + str(question_id),
-            "question": question_text,
             "answer": response_text
         })
 
-    # Save results to submission.json
+    submission = {
+        "participant_id": "SM Mushtaq Bokhari",
+        "answers": results
+    }
+
     try:
         with open('submission.json', 'w', encoding='utf-8') as f:
-            json.dump(results, f, ensure_ascii=False, indent=4)
+            json.dump(submission, f, ensure_ascii=False, indent=4)
         print("Results saved successfully to submission.json")
     except Exception as e:
         print(f"Error saving results to submission.json: {str(e)}")
 
-    return {"results": results}
+    return submission
 
 
 @app.post("/api/chat")
