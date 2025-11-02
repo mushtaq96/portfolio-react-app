@@ -333,16 +333,19 @@ async def chat(input: ChatInput):
 
     # Check if services are available
     if groq_client is None:
-        return {"response": "AI assistant unavailable.", "context": []}
+        # Add sources to response
+        return {"response": "AI assistant unavailable.", "context": [], "sources": []}
 
     if chroma_collection is None:
-        return {"response": "Knowledge base unavailable.", "context": []}
+        # Add sources to response
+        return {"response": "Knowledge base unavailable.", "context": [], "sources": []}
 
     user_query = input.message
     user_language = input.language
     print(f"Received query: '{user_query}' (Language: {user_language})")
 
     context_text = ""
+    retrieved_sources = []  # New variable to store source info
     try:
         if EMBEDDING_API_URL and httpx_client:
             # --- OPTION 1: Use External Embedding API ---
@@ -368,7 +371,8 @@ async def chat(input: ChatInput):
                 print(f"❌ Error contacting Embedding API: {req_err}")
                 return {
                     "response": "Sorry, I'm having trouble accessing my knowledge base right now (embedding service error).",
-                    "context": [f"Embedding API Request Error: {str(req_err)}"]
+                    "context": [f"Embedding API Request Error: {str(req_err)}"],
+                    "sources": []  # Add sources to error response
                 }
             except httpx.HTTPStatusError as http_err:
                 # Handle HTTP errors returned by the Embedding API (e.g., 500 Internal Server Error)
@@ -376,7 +380,8 @@ async def chat(input: ChatInput):
                     f"❌ Embedding API returned error status: {http_err.response.status_code} - {http_err.response.text}")
                 return {
                     "response": "Sorry, I encountered a problem accessing my knowledge base (embedding service failure).",
-                    "context": [f"Embedding API HTTP Error ({http_err.response.status_code}): {http_err.response.text}"]
+                    "context": [f"Embedding API HTTP Error ({http_err.response.status_code}): {http_err.response.text}"],
+                    "sources": []  # Add sources to error response
                 }
             except Exception as embed_err:
                 # Handle other potential errors (e.g., JSON parsing issues)
@@ -384,7 +389,8 @@ async def chat(input: ChatInput):
                     f"Error getting embedding from external API: {embed_err}")
                 return {
                     "response": "Sorry, an error occurred while preparing to search for relevant information (embedding step).",
-                    "context": [f"Embedding Error: {str(embed_err)}"]
+                    "context": [f"Embedding Error: {str(embed_err)}"],
+                    "sources": []  # Add sources to error response
                 }
         else:
             # --- OPTION 2: Use ChromaDB's internal embedding (default/original behavior) ---
@@ -396,12 +402,10 @@ async def chat(input: ChatInput):
             results = chroma_collection.query(
                 query_texts=[user_query], n_results=3)
 
-        # Extract and concatenate retrieved chunks
+        # Extract and concatenate retrieved chunks AND metadata
         # Added check for metadatas
         if results and 'documents' in results and results['documents'] and 'metadatas' in results and results['metadatas']:
-            # Get the list of retrieved text chunks
             retrieved_docs = results['documents'][0]  # The actual text chunks
-            # Get the list of corresponding metadatas
             retrieved_metadatas = results['metadatas'][0]  # The metadata dicts
             print("DEBUG RAG - Retrieved Chunks:")
             # Corrected variable names
@@ -409,6 +413,18 @@ async def chat(input: ChatInput):
                 # Print first 100 chars of chunk and source info
                 print(
                     f"  Chunk {i}: Source: {meta.get('source_doc', 'Unknown')}, File: {meta.get('file_path', 'Unknown')}, Content Start: {chunk[:100]}...")  # Use 'chunk' for content
+                # --- NEW: Build source information list ---
+                source_info = {
+                    # Include a snippet
+                    "content_snippet": chunk[:200] + "..." if len(chunk) > 200 else chunk,
+                    # Use metadata to get source name
+                    "source_document": meta.get('source_doc', 'Unknown'),
+                    # Use metadata to get full path if available
+                    "file_path": meta.get('file_path', 'Unknown')
+                    # You could add more metadata fields here if stored, e.g., chunk_id, page number (if from PDF)
+                }
+                retrieved_sources.append(source_info)
+            # --- END NEW ---
             # Join the DOCUMENTS (text chunks), not the metadatas
             context_text = "\n".join(retrieved_docs)  # Corrected variable name
             print(
@@ -416,9 +432,11 @@ async def chat(input: ChatInput):
         else:
             print("DEBUG RAG - No documents retrieved by ChromaDB query.")
             context_text = "No relevant information found in the knowledge base."
+            retrieved_sources = [{"content_snippet": "No relevant information found.",
+                                  "source_document": "N/A", "file_path": "N/A"}]  # Indicate no sources found
 
         # Build enhanced prompt using prompts.py
-        base_instruction = get_base_instruction()
+        base_instruction = get_base_instruction()  # Use the Argusa-specific prompt
         language_instruction = get_language_instruction(user_language)
 
         full_prompt = f"""{base_instruction}
@@ -430,7 +448,7 @@ Context:
 Question:
 {user_query}
 
-Answer (concise and professional):"""
+Answer:"""  # Simplified prompt for Argusa, removed "(concise and professional):"
 
         print(
             f"Sending prompt to LLM (first 300 chars): {full_prompt[:300]}...")
@@ -440,8 +458,8 @@ Answer (concise and professional):"""
             chat_completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": full_prompt}],
                 model="llama-3.1-8b-instant",
-                temperature=0.7,
-                max_tokens=200,
+                temperature=0.5,  # Lower temp for more consistent retrieval-based answers
+                max_tokens=500,  # Allow more tokens for potentially longer answers
                 top_p=0.9,
                 stream=False,
             )
@@ -450,23 +468,27 @@ Answer (concise and professional):"""
             )
             print(f"LLM Response: {llm_response_text}")
 
+            # Return response, context, AND sources
             return {
                 "response": llm_response_text,
-                "context": [context_text] if context_text else []
+                "context": [context_text] if context_text else [],
+                "sources": retrieved_sources  # Include the source information
             }
 
         except Exception as api_error:
             print(f"❌ Groq API error: {api_error}")
             return {
                 "response": "Sorry, I encountered an error while processing your request.",
-                "context": [f"API Error: {str(api_error)}"]
+                "context": [f"API Error: {str(api_error)}"],
+                "sources": []  # No sources if API fails
             }
 
     except Exception as e:
         print(f"Error during processing: {e}")
         return {
             "response": "Sorry, I encountered an error while processing your request.",
-            "context": [f"Error: {str(e)}"]
+            "context": [f"Error: {str(e)}"],
+            "sources": []  # No sources if processing fails
         }
 
 # Health check endpoints
