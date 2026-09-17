@@ -69,23 +69,6 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         sender: 'bot',
         context: response.data.context
       }]);
-
-      // --- Add Text-to-Speech ---
-      if (response.data.response && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(response.data.response);
-        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
-        utterance.volume = 1;
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        // Optional: Try to find a specific voice
-        const voices = window.speechSynthesis.getVoices();
-        const desiredVoice = voices.find(voice => voice.lang === utterance.lang);
-        if (desiredVoice) {
-          utterance.voice = desiredVoice;
-        }
-        window.speechSynthesis.speak(utterance);
-      }
-      // --- End Text-to-Speech ---
     } catch (error) {
       console.error('Chat error:', error);
       let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email.";
@@ -113,13 +96,6 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         text: fallbackResponse,
         sender: 'bot-error'
       }]);
-
-      // Add TTS for fallback:
-      if (fallbackResponse && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(fallbackResponse);
-        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
-        window.speechSynthesis.speak(utterance);
-      }
     } finally {
       setIsLoading(false);
     }
