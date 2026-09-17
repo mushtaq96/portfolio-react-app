@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import Skills from "./components/Skills";
 import Work from "./components/Work";
+import Experience from "./components/Experience";
 import ChatWindow from "./components/Chatbot/ChatWindow";
 import MusicConsentModal from "./components/MusicConsentModal"; // Import the new component
 import BgAudio from './assets/music/intro-theme18-faster.mp3';
@@ -71,8 +72,9 @@ function App() {
         onDecline={handleDeclineMusic}
       />
       <div className="sm:pt-20 md:pt-0 lg:pt-0">
-        <Home />
+        <Home showChatbot={showChatbot} />
         <About />
+        <Experience />
         <Skills />
         <Work />
         <Contact />
