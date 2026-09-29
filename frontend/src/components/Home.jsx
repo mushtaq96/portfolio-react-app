@@ -1,7 +1,7 @@
 import React from 'react'
 import {HiArrowNarrowRight} from 'react-icons/hi'
 import { FaRobot, FaFileDownload } from 'react-icons/fa';
-import { Link } from 'react-scroll'
+import { scroller } from 'react-scroll'
 
 // TODO: verify this points to your latest CV (the old Google Drive link).
 const CV_URL = 'https://drive.google.com/file/d/1YFpYQfXJki79ayEcpK56zSYBp4Ru4v4t/view?usp=sharing';
@@ -26,19 +26,24 @@ const Home = ({ showChatbot }) => {
                     Work authorization for Germany · German B2 · English C2. Open to <span className='text-red-500'>full-time</span> roles.
                 </p>
                 <div className='flex flex-wrap items-center gap-2'>
-                    <Link to="work" smooth={true} duration={500} offset={-80}>
-                        <button className='text-white group border-2 px-6 py-3 my-2 flex items-center hover:bg-red-600 hover:border-red-600 rounded'>
-                            View Work
-                            <span className='group-hover:rotate-90 duration-300'>
-                                <HiArrowNarrowRight className='ml-3'/>
-                            </span>
-                        </button>
-                    </Link>
-                    <a href={CV_URL} target="_blank" rel="noreferrer">
-                        <button className='text-white group border-2 border-gray-500 px-6 py-3 my-2 flex items-center hover:bg-gray-700 hover:border-gray-700 rounded'>
-                            Download CV
-                            <FaFileDownload className='ml-3 group-hover:translate-y-0.5 duration-300' />
-                        </button>
+                    {/* A real button (keyboard-focusable) instead of a button nested in react-scroll's href-less <a>. */}
+                    <button
+                        onClick={() => scroller.scrollTo('work', { smooth: true, duration: 500, offset: -80 })}
+                        className='text-white group border-2 px-6 py-3 my-2 flex items-center hover:bg-red-600 hover:border-red-600 rounded'
+                    >
+                        View Work
+                        <span className='group-hover:rotate-90 duration-300'>
+                            <HiArrowNarrowRight className='ml-3'/>
+                        </span>
+                    </button>
+                    <a
+                        href={CV_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className='text-white group border-2 border-gray-500 px-6 py-3 my-2 flex items-center hover:bg-gray-700 hover:border-gray-700 rounded'
+                    >
+                        Download CV
+                        <FaFileDownload className='ml-3 group-hover:translate-y-0.5 duration-300' />
                     </a>
                 </div>
                 {/* AI assistant teaser */}

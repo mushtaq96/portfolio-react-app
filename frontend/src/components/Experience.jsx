@@ -75,7 +75,7 @@ const Experience = () => {
                                 </h3>
                                 <span className='text-sm text-gray-400'>{r.period}</span>
                             </div>
-                            <p className='text-sm text-gray-500'>{r.location}</p>
+                            <p className='text-sm text-gray-400'>{r.location}</p>
                             <p className='mt-2 text-gray-300'>{r.impact}</p>
                         </div>
                     ))}
