@@ -42,8 +42,15 @@ htmlcov/
 # ChromaDB persistent storage
 backend/.chroma_db/
 
-# Document storage
-# backend/.documents/
+# Document storage — contains PII (CV/Lebenslauf). Keep local only, NEVER commit.
+backend/.documents/
+
+# Yarn Berry (v2+) artifacts. CI uses Yarn 1 with yarn.lock v1; don't mix them.
+frontend/.yarn/
+frontend/.yarnrc.yml
+
+# Personal work notes — contain employer-internal detail. Never commit or publish.
+Daily Learnings*.docx
 
 # Environment variables file
 .env
