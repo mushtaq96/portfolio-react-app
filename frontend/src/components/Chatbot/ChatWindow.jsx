@@ -95,6 +95,9 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       // --- Specific Error Messages ---
       if (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout'))) {
         fallbackResponse = "The request took too long. Please check your connection or try again.";
+      } else if (error.response && error.response.status === 429) {
+        // Rate limited: the backend's message explains the limit and how to reach me.
+        fallbackResponse = (error.response.data && error.response.data.detail) || "You have reached the question limit for now. Please contact me directly.";
       } else if (!error.response) {
         // Network error (e.g., backend down)
         fallbackResponse = "The AI assistant seems to be offline at the moment. You can email me directly at mushtaq96smb@gmail.com!";
