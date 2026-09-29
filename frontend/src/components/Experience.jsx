@@ -4,6 +4,14 @@ import React from 'react';
 // Keep these honest and verifiable; recruiters (especially in DE/CH) probe them.
 const roles = [
     {
+        company: 'ASC Technologies',
+        role: 'Software Engineer',
+        location: 'Germany',
+        period: 'Oct 2025 – Present',
+        // Deliberately no metric: none is verifiable yet. Add one only if you can show its source.
+        impact: 'Full-stack and solution-design work across C#/.NET, Azure, GraphQL and React: built third-party platform integrations and diagnosed cross-service concurrency and deployment issues.',
+    },
+    {
         company: 'CGI',
         role: 'Full-Stack AI Engineer',
         location: 'Frankfurt, Germany',
