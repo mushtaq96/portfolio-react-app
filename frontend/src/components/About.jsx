@@ -39,7 +39,7 @@ const About = () => {
                            on — an enterprise order platform handling 1,000+ transactions a week, with test coverage
                            pushed past 80%. Germany — and a Master's at grade 1.4 — is where I moved into production
                            ML: image-processing models at <span className='text-gray-100 font-semibold'>Mercedes-Benz R&D</span>{' '}
-                           (+20% accuracy) and, now at <span className='text-gray-100 font-semibold'>CGI</span>, a
+                           (+20% accuracy) and at <span className='text-gray-100 font-semibold'>CGI</span>, a
                            communication-analysis platform that cut manual analysis time by ~60%.</p>
                         <br />
                         <p>Day to day that's C#/.NET, Python, and Azure, with React on the front when it's needed.

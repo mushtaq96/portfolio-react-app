@@ -7,7 +7,7 @@ const roles = [
         company: 'CGI',
         role: 'Full-Stack AI Engineer',
         location: 'Frankfurt, Germany',
-        period: 'Apr 2025 – Present',
+        period: 'Apr 2025 – Aug 2025',
         impact: 'Built an AI communication-analysis platform (C#/ASP.NET Core, React, Azure) that cut manual analysis time by ~60%.',
     },
     {
@@ -30,6 +30,19 @@ const roles = [
         location: 'Tokyo, Japan',
         period: 'Nov 2018 – Feb 2022',
         impact: 'Maintained an enterprise order system (>1,000 transactions/week) and raised automated-test coverage above 80%, saving ~20 dev-hours/month.',
+    },
+];
+
+// Two lessons from production work, deliberately generic: no employer, customer,
+// system or ticket details. Keep it that way.
+const lessons = [
+    {
+        title: 'Own two fields, patch two fields.',
+        body: 'With several writers, replacing a whole record to change one field silently reverts everyone else’s changes. Update only what you own, and guard writes with optimistic concurrency.',
+    },
+    {
+        title: 'Changing a shared data contract means owning deployment consistency.',
+        body: 'If a change alters data that several services read or write, test and deploy them from the same revision. Mixed versions look exactly like flaky tests.',
     },
 ];
 
@@ -58,6 +71,18 @@ const Experience = () => {
                             <p className='mt-2 text-gray-300'>{r.impact}</p>
                         </div>
                     ))}
+                </div>
+
+                <div className='mt-10'>
+                    <p className='text-xl font-bold text-gray-100'>Lessons from production</p>
+                    <div className='mt-3 grid sm:grid-cols-2 gap-4'>
+                        {lessons.map((l) => (
+                            <div key={l.title} className='rounded-md border border-gray-700 bg-gray-800/30 p-4'>
+                                <p className='font-semibold text-red-400'>{l.title}</p>
+                                <p className='mt-2 text-sm text-gray-300'>{l.body}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <p className='mt-6 text-gray-400 text-sm'>
