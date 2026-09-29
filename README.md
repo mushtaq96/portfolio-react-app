@@ -10,13 +10,15 @@ grounding context.
 > personal project, not a production service. Known limitations are listed
 > explicitly below rather than hidden — see [Limitations](#limitations).
 
-- **Live demo:** <!-- TODO: paste the GitHub Pages URL. Note free-tier cold start below. -->
+- **Live demo:** <https://mushtaq96.github.io/portfolio-react-app/> (the chat runs on free-tier hosting, so the first question after idle can be slow; see [Limitations](#limitations))
 - **Architecture:** see [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Why it's built this way:** see [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md)
 - **What I'd change:** see [LESSONS_LEARNED.md](LESSONS_LEARNED.md)
 
-<!-- TODO: add a screenshot or GIF of the chat in action here. A recruiter
-     spends ~15s on a repo; a picture buys you the next 15. -->
+<!-- To add: save a screenshot of the chat answering a real question on the live
+     site as docs/images/chat.png, then replace this comment with:
+     ![The chat assistant answering a question](docs/images/chat.png)
+     Do not add the image link before the file exists, or the README shows a broken image. -->
 
 ---
 
@@ -121,13 +123,21 @@ cd backend && pytest
 
 ---
 
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `scripts/measure_latency.py` | Measures cold and warm chat latency on the deployed backend and prints a README-ready table. Standard library only. |
+| `backend/check_retrieval.py` | Prints what each English and German test question retrieves, plus a language-match rate, to check the bilingual claim locally. |
+
 ## Limitations
 
 These are deliberate trade-offs of a free-tier personal project, stated up front:
 
 - **Cold starts.** Both backend services sleep on Render's free tier. The first
-  request after idle can take 30–60s *per service*. Acceptable for a portfolio,
-  not for production.
+  request after idle can take tens of seconds *per service* (run
+  `scripts/measure_latency.py` for real numbers). Acceptable for a portfolio, not
+  for production.
 - **The chat endpoint is unauthenticated.** Rate limiting (5 questions/hour per
   client IP) is best-effort and in-memory: it resets on restart, and the proxy
   assumption behind the client-IP lookup (`TRUSTED_PROXY_COUNT`) is unverified on
@@ -148,8 +158,8 @@ These are deliberate trade-offs of a free-tier personal project, stated up front
 
 ## License
 
-<!-- TODO: add a LICENSE file, or remove this section. The old README claimed MIT
-     without shipping the file. -->
+The code is MIT-licensed; see [LICENSE](LICENSE). The personal content on the site
+(text, photos, CV) is not covered by that license and remains all rights reserved.
 
 ---
 

@@ -54,7 +54,9 @@ the semantic gap is tolerable.
 version of this decision includes a handful of German test queries with the
 retrieved chunks eyeballed for relevance. Claiming "reasonable German support"
 without that evidence is exactly the kind of unverified claim a Swiss interviewer
-will probe. Measure it, or soften the claim.
+will probe. Measure it, or soften the claim. `backend/check_retrieval.py` prints what each
+German and English test query retrieves, plus a language-match rate; run it and
+record the result here.
 
 **Cleanup owed.** The L12 model is still committed to the repo but never loaded.
 Remove it.
