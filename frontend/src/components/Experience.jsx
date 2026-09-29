@@ -6,7 +6,7 @@ const roles = [
     {
         company: 'ASC Technologies',
         role: 'Software Engineer',
-        location: 'Germany',
+        location: 'Hösbach, Germany',
         period: 'Oct 2025 – Present',
         // Deliberately no metric: none is verifiable yet. Add one only if you can show its source.
         impact: 'Full-stack and solution-design work across C#/.NET, Azure, GraphQL and React: built third-party platform integrations and diagnosed cross-service concurrency and deployment issues.',
