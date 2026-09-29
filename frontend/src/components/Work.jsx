@@ -2,22 +2,19 @@
 import React from 'react'
 import { FaRobot, FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
 import Opensea from '../assets/projects/opensea.png'
-import Covid from '../assets/projects/covid.png'
-import Comments from '../assets/projects/comments.png'
-import Movie from '../assets/projects/movie.png'
 import MovieRec from '../assets/projects/movie_recommendation.png'
 import SearchPDF from '../assets/projects/search_pdf.png'
 
-// Only include a Demo link when the deployment is actually live. The old Heroku
-// (free dynos retired) and href="/" demos were removed — a dead demo hurts trust
-// more than no demo. Code links stay for everything.
+// Only include a Demo link when the deployment is actually live (the NFT demo
+// returned HTTP 200 when last checked). The old Heroku and href="/" demos were
+// removed: a dead demo hurts trust more than no demo.
 const projects = [
     {
         title: 'NFT Marketplace',
         description: 'Full-stack NFT marketplace with wallet connection and on-chain listing/buying.',
         tech: ['React', 'Blockchain'],
         image: Opensea,
-        demo: 'https://opensea-production.vercel.app/', // TODO: confirm still live
+        demo: 'https://opensea-production.vercel.app/',
         code: 'https://github.com/mushtaq96/opensea-blockchain-clone',
     },
     {
@@ -34,27 +31,13 @@ const projects = [
         image: MovieRec,
         code: 'https://github.com/mushtaq96/PyMovieRec',
     },
-    {
-        title: 'COVID-19 Tracker',
-        description: 'Real-time global COVID-19 data-visualization dashboard.',
-        tech: ['React'],
-        image: Covid,
-        code: 'https://github.com/mushtaq96/corona-tracker',
-    },
-    {
-        title: 'Movie Database',
-        description: 'Interactive movie search over a public film API.',
-        tech: ['React'],
-        image: Movie,
-        code: 'https://github.com/mushtaq96/my-movie-search-webapp',
-    },
-    {
-        title: 'Source Code Comment Analyzer',
-        description: 'Analyzes source files and summarizes their inline comments.',
-        tech: ['Python'],
-        image: Comments,
-        code: 'https://github.com/mushtaq96/source-comments',
-    },
+]
+
+// Older or smaller projects: linked, not showcased.
+const moreProjects = [
+    { title: 'COVID-19 Tracker', href: 'https://github.com/mushtaq96/corona-tracker' },
+    { title: 'Movie Database', href: 'https://github.com/mushtaq96/my-movie-search-webapp' },
+    { title: 'Source Code Comment Analyzer', href: 'https://github.com/mushtaq96/source-comments' },
 ]
 
 const TechTags = ({ tech }) => (
@@ -138,6 +121,18 @@ const Work = () => {
                         </div>
                     ))}
                 </div>
+
+                <p className='mt-8 text-sm text-gray-400'>
+                    Older projects:{' '}
+                    {moreProjects.map((p, i) => (
+                        <React.Fragment key={p.title}>
+                            {i > 0 && ' · '}
+                            <a href={p.href} target='_blank' rel='noreferrer' className='text-red-400 hover:text-red-300 underline'>{p.title}</a>
+                        </React.Fragment>
+                    ))}
+                    {' · '}
+                    <a href='https://github.com/mushtaq96' target='_blank' rel='noreferrer' className='text-red-400 hover:text-red-300 underline'>all on GitHub</a>
+                </p>
             </div>
         </div>
     )
