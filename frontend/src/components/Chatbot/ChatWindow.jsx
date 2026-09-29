@@ -34,6 +34,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('en');
+  const [showWakeNotice, setShowWakeNotice] = useState(false);
+  const [slowReply, setSlowReply] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -41,6 +43,21 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   };
 
   useEffect(scrollToBottom, [messages]);
+
+  // Pre-warm the backend when the chat opens: the free-tier host sleeps when idle.
+  // Show a notice only if the wake-up is actually slow (>3s), so warm starts stay clean.
+  // A failure here is ignored; the normal send path reports errors to the user.
+  useEffect(() => {
+    let cancelled = false;
+    const notice = setTimeout(() => { if (!cancelled) setShowWakeNotice(true); }, 3000);
+    axios.get(`${API_BASE_URL}/health`, { timeout: 90000 })
+      .catch(() => {})
+      .finally(() => {
+        clearTimeout(notice);
+        if (!cancelled) setShowWakeNotice(false);
+      });
+    return () => { cancelled = true; clearTimeout(notice); };
+  }, []);
 
   // --- 2. Improved Error Handling & Fallback Responses ---
   const handleSend = async (messageText = null) => { // Accept optional message text
@@ -50,6 +67,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     if (!textToSend.trim() || isLoading) return;
 
     setIsLoading(true);
+    // If the reply is slow, tell the user why instead of leaving "Thinking..." on screen.
+    const slowTimer = setTimeout(() => setSlowReply(true), 8000);
     const userMessage = { text: textToSend, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
 
@@ -63,7 +82,7 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         message: textToSend,
         history: messages,
         language
-      });
+      }, { timeout: 90000 });
       setMessages(prev => [...prev, {
         text: response.data.response,
         sender: 'bot',
@@ -97,6 +116,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         sender: 'bot-error'
       }]);
     } finally {
+      clearTimeout(slowTimer);
+      setSlowReply(false);
       setIsLoading(false);
     }
   };
@@ -109,7 +130,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
 
   return (
     // --- 3. Add Close Button to Top Bar ---
-    <div className="fixed bottom-8 right-8 w-96 bg-[#0a192f] border border-red-600 rounded-lg shadow-lg flex flex-col h-[500px] z-50">
+    // Phones: near full-width sheet above the corner buttons. sm+: the original 384px window.
+    <div className="fixed z-50 bottom-20 left-2 right-2 sm:left-auto sm:right-8 sm:bottom-8 sm:w-96 h-[500px] max-h-[calc(100vh_-_7rem)] bg-[#0a192f] border border-red-600 rounded-lg shadow-lg flex flex-col">
       {/* Top Bar with Close Button */}
       <div className="p-4 border-b border-red-600 flex justify-between items-center">
     <div className="flex items-center">
@@ -148,6 +170,11 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     </div>
  </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {showWakeNotice && (
+          <div className="p-3 rounded-lg bg-yellow-900/40 border border-yellow-700 text-yellow-100 text-sm">
+            Waking up the assistant (free hosting). The first answer can take up to a minute.
+          </div>
+        )}
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -171,7 +198,11 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
             */}
           </div>
         ))}
-        {isLoading && <div className="p-3 bg-gray-800 text-white rounded-lg">Thinking...</div>}
+        {isLoading && (
+          <div className="p-3 bg-gray-800 text-white rounded-lg">
+            {slowReply ? 'Still waking the servers (free hosting). Up to a minute on the first question...' : 'Thinking...'}
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t border-red-600 flex items-center">
