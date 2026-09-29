@@ -119,6 +119,14 @@ signed token the frontend obtains and sends. `slowapi` gives most of this in a
 few lines. This is a small change, not a big one — which is why leaving it broken
 is a weak spot rather than a defensible trade-off.
 
+**Update (fix/backend-correctness).** The limiter now returns a real 429 with a
+`Retry-After` header. Before, it raised `HTTPException` inside HTTP middleware,
+which FastAPI does not handle, so callers got a 500 (reproduced with a minimal
+app). It also keys on the client IP taken from `X-Forwarded-For`, counted from
+the right by `TRUSTED_PROXY_COUNT` so a spoofed left-hand entry cannot evade it.
+Still true: there is no auth, state is per-process, and `TRUSTED_PROXY_COUNT=1`
+is an assumption I have not verified against Render's actual proxy chain.
+
 ---
 
 ## ADR-006 — Voice is client-side (Web Speech API) {#voice}
@@ -184,7 +192,7 @@ There is no upside to accept here — it's simply owed cleanup.
 | 002 | Small English model for DE too | Reasonable bet, **currently unmeasured** |
 | 003 | Simple chunking/retrieval | Right-sized; add sentence-aware chunking |
 | 004 | Groq 8B, non-streaming | Good model choice; stream next |
-| 005 | Open endpoint + weak limiter | **Under-priced risk; cheap to fix** |
+| 005 | Open endpoint + weak limiter | Limiter fixed (429, client IP); no auth yet; proxy assumption unverified |
 | 006 | Client-side voice | Correct; delete the dead Whisper dep |
 | 007 | Artifacts in git | **Weakest decision; reverse it** |
 | 008 | PII in git | Not a trade-off; remediate |

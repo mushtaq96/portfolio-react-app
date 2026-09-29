@@ -79,6 +79,8 @@ Environment variables (`backend/.env`):
 GROQ_API_KEY=...              # required
 EMBEDDING_API_URL=http://localhost:8001   # optional; falls back to in-process embedding
 ALLOW_INDEXING=false          # set true only when (re)building the index
+TRUSTED_PROXY_COUNT=1         # reverse proxies in front of the app (client IP for rate limiting)
+DEBUG_CONTEXT=false           # true returns the raw retrieved chunks in /api/chat responses
 ```
 
 ### 3. Build the vector index (one-off)
@@ -126,23 +128,23 @@ These are deliberate trade-offs of a free-tier personal project, stated up front
 - **Cold starts.** Both backend services sleep on Render's free tier. The first
   request after idle can take 30–60s *per service*. Acceptable for a portfolio,
   not for production.
-- **The chat endpoint is unauthenticated.** Rate limiting is best-effort and
-  in-memory only. See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md#access-control)
-  for why, and what production would require.
-- **Single-turn.** The chatbot does not yet use conversation history. The
-  frontend sends it; the backend ignores it. Wiring this up is the top item on
-  the roadmap.
+- **The chat endpoint is unauthenticated.** Rate limiting (5 questions/hour per
+  client IP) is best-effort and in-memory: it resets on restart, and the proxy
+  assumption behind the client-IP lookup (`TRUSTED_PROXY_COUNT`) is unverified on
+  Render. See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md#access-control).
+- **Basic multi-turn.** The last 6 turns are sent to the LLM and short follow-ups
+  reuse the previous question for retrieval. There is no summarisation or
+  LLM-based query rewriting.
 - **Retrieval is deliberately simple.** Fixed-size character chunking, top-3
   cosine retrieval, no re-ranking. Good enough for a handful of CV documents;
   see [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md#retrieval).
 
 ## Roadmap
 
-1. Fix and run the test suite in CI (see [TEST_AUDIT.md](TEST_AUDIT.md)).
-2. Wire conversation history into the prompt (multi-turn).
-3. Add a lightweight token/key on the chat endpoint.
-4. Migrate the frontend from CRA to Vite.
-5. Stream LLM responses.
+1. Verify `TRUSTED_PROXY_COUNT` against the deployed proxy chain, and add a
+   lightweight token on the chat endpoint.
+2. Migrate the frontend from CRA to Vite.
+3. Stream LLM responses.
 
 ## License
 

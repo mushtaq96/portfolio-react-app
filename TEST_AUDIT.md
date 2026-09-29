@@ -1,5 +1,12 @@
 # Test Audit
 
+> **Status update.** F1–F5 below were fixed in `2b615f0` and the suite now runs
+> (7 tests passed locally). The correctness bug it describes (HTTP 200 on every
+> upstream failure) and the 429-vs-500 rate-limit question were then fixed on
+> `fix/backend-correctness`, with tests that lock each behaviour in: 35 tests pass
+> locally, and 27 of them fail against the previous `main.py`, so they test real
+> behaviour. The findings below are kept as the record of what was wrong.
+
 **Method:** static analysis of the test suite against the code it targets, at the
 current `main`. It has not been executed in this audit (the heavy backend
 dependencies — torch, chromadb, sentence-transformers, whisper — were not
