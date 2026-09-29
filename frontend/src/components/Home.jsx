@@ -26,7 +26,7 @@ const Home = ({ showChatbot }) => {
                     Work authorization for Germany · German B2 · English C2. Open to <span className='text-red-500'>full-time</span> roles.
                 </p>
                 <div className='flex flex-wrap items-center gap-2'>
-                    <Link to="work" smooth={true} duration={500}>
+                    <Link to="work" smooth={true} duration={500} offset={-80}>
                         <button className='text-white group border-2 px-6 py-3 my-2 flex items-center hover:bg-red-600 hover:border-red-600 rounded'>
                             View Work
                             <span className='group-hover:rotate-90 duration-300'>
