@@ -34,6 +34,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('en');
+  const [showWakeNotice, setShowWakeNotice] = useState(false);
+  const [slowReply, setSlowReply] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -41,6 +43,21 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
   };
 
   useEffect(scrollToBottom, [messages]);
+
+  // Pre-warm the backend when the chat opens: the free-tier host sleeps when idle.
+  // Show a notice only if the wake-up is actually slow (>3s), so warm starts stay clean.
+  // A failure here is ignored; the normal send path reports errors to the user.
+  useEffect(() => {
+    let cancelled = false;
+    const notice = setTimeout(() => { if (!cancelled) setShowWakeNotice(true); }, 3000);
+    axios.get(`${API_BASE_URL}/health`, { timeout: 90000 })
+      .catch(() => {})
+      .finally(() => {
+        clearTimeout(notice);
+        if (!cancelled) setShowWakeNotice(false);
+      });
+    return () => { cancelled = true; clearTimeout(notice); };
+  }, []);
 
   // --- 2. Improved Error Handling & Fallback Responses ---
   const handleSend = async (messageText = null) => { // Accept optional message text
@@ -50,6 +67,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     if (!textToSend.trim() || isLoading) return;
 
     setIsLoading(true);
+    // If the reply is slow, tell the user why instead of leaving "Thinking..." on screen.
+    const slowTimer = setTimeout(() => setSlowReply(true), 8000);
     const userMessage = { text: textToSend, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
 
@@ -63,29 +82,12 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         message: textToSend,
         history: messages,
         language
-      });
+      }, { timeout: 90000 });
       setMessages(prev => [...prev, {
         text: response.data.response,
         sender: 'bot',
         context: response.data.context
       }]);
-
-      // --- Add Text-to-Speech ---
-      if (response.data.response && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(response.data.response);
-        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
-        utterance.volume = 1;
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        // Optional: Try to find a specific voice
-        const voices = window.speechSynthesis.getVoices();
-        const desiredVoice = voices.find(voice => voice.lang === utterance.lang);
-        if (desiredVoice) {
-          utterance.voice = desiredVoice;
-        }
-        window.speechSynthesis.speak(utterance);
-      }
-      // --- End Text-to-Speech ---
     } catch (error) {
       console.error('Chat error:', error);
       let fallbackResponse = "Sorry, I'm having trouble connecting right now. Please try again later or reach out via email.";
@@ -93,6 +95,9 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
       // --- Specific Error Messages ---
       if (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout'))) {
         fallbackResponse = "The request took too long. Please check your connection or try again.";
+      } else if (error.response && error.response.status === 429) {
+        // Rate limited: the backend's message explains the limit and how to reach me.
+        fallbackResponse = (error.response.data && error.response.data.detail) || "You have reached the question limit for now. Please contact me directly.";
       } else if (!error.response) {
         // Network error (e.g., backend down)
         fallbackResponse = "The AI assistant seems to be offline at the moment. You can email me directly at mushtaq96smb@gmail.com!";
@@ -113,14 +118,9 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
         text: fallbackResponse,
         sender: 'bot-error'
       }]);
-
-      // Add TTS for fallback:
-      if (fallbackResponse && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(fallbackResponse);
-        utterance.lang = language === 'de' ? 'de-DE' : 'en-US';
-        window.speechSynthesis.speak(utterance);
-      }
     } finally {
+      clearTimeout(slowTimer);
+      setSlowReply(false);
       setIsLoading(false);
     }
   };
@@ -133,7 +133,8 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
 
   return (
     // --- 3. Add Close Button to Top Bar ---
-    <div className="fixed bottom-8 right-8 w-96 bg-[#0a192f] border border-red-600 rounded-lg shadow-lg flex flex-col h-[500px] z-50">
+    // Phones: near full-width sheet above the corner buttons. sm+: the original 384px window.
+    <div className="fixed z-50 bottom-20 left-2 right-2 sm:left-auto sm:right-8 sm:bottom-8 sm:w-96 h-[500px] max-h-[calc(100vh_-_7rem)] bg-[#0a192f] border border-red-600 rounded-lg shadow-lg flex flex-col">
       {/* Top Bar with Close Button */}
       <div className="p-4 border-b border-red-600 flex justify-between items-center">
     <div className="flex items-center">
@@ -172,6 +173,11 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
     </div>
  </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {showWakeNotice && (
+          <div className="p-3 rounded-lg bg-yellow-900/40 border border-yellow-700 text-yellow-100 text-sm">
+            Waking up the assistant (free hosting). The first answer can take up to a minute.
+          </div>
+        )}
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -195,7 +201,11 @@ const ChatWindow = ({ onClose }) => { // Accept onClose prop for communication
             */}
           </div>
         ))}
-        {isLoading && <div className="p-3 bg-gray-800 text-white rounded-lg">Thinking...</div>}
+        {isLoading && (
+          <div className="p-3 bg-gray-800 text-white rounded-lg">
+            {slowReply ? 'Still waking the servers (free hosting). Up to a minute on the first question...' : 'Thinking...'}
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t border-red-600 flex items-center">

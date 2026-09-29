@@ -22,18 +22,30 @@ const About = () => {
                 <div className='max-w-[1000px] w-full grid sm:grid-cols-2 gap-8 px-4'>
                     <div className='sm:text-right text-4xl font-bold'>
                         <p>Born in <span className='text-red-500'>India</span></p>
-                        <p>Worked in <span className='text-red-500'>Japan</span></p>
-                        <p>Studied in <span className='text-red-500'>Germany</span></p>
-                        <p>Hello there, I am Mushtaq</p>
-                        <p className='text-xl font-normal'>Thanks for visiting, please take a look around</p>
+                        <p>Sharpened in <span className='text-red-500'>Japan</span></p>
+                        <p>Now building in <span className='text-red-500'>Germany</span></p>
+                        <p className='mt-4'>Hi, I'm Mushtaq.</p>
+                        <p className='text-xl font-normal mt-2'>
+                            Three countries, three engineering cultures — one throughline: systems people can rely on.
+                        </p>
                     </div>
                     <div>
-                        <p>I'm a skilled Software Developer with a proven track record in crafting insightful, engaging, and functional web applications. My background in AI/ML complements my software engineering skills, allowing me to integrate machine learning models into web applications.</p>
+                        <p>I'm a full-stack engineer who leans backend, with 5+ years turning messy real-world
+                           problems into dependable services. My work sits where solid backend engineering meets
+                           applied ML — systems that have to be correct, observable, and still ship on time.</p>
                         <br />
-                        <p> Drawing on my experience as a Backend Developer, Deep Learning Engineer and Full-Stack Developer, I bring a keen observer's mindset to unravel the intricacies of how things work. 
-                            In addition to my proficiency in C#, Python, TypeScript, I actively engage with machine learning and artificial intelligence to stay at the forefront of technological innovation.</p>
+                        <p>That perspective is stitched together from three places. India gave me the fundamentals.
+                           Four years in Tokyo taught me the discipline of maintaining systems other people depend
+                           on — an enterprise order platform handling 1,000+ transactions a week, with test coverage
+                           pushed past 80%. Germany — and a Master's at grade 1.4 — is where I moved into production
+                           ML: image-processing models at <span className='text-gray-100 font-semibold'>Mercedes-Benz R&D</span>{' '}
+                           (+20% accuracy) and at <span className='text-gray-100 font-semibold'>CGI</span>, a
+                           communication-analysis platform that cut manual analysis time by ~60%.</p>
                         <br />
-                        <p>Outside of work, I'm a passionate participant in the web3 space and contribute to various open-source projects. I also devote my time to volunteering activities, which broaden my perspective across different domains.</p>
+                        <p>Day to day that's C#/.NET, Python, and Azure, with React on the front when it's needed.
+                           Outside the editor I've coordinated hackathons and led orientation for ~1,000 new
+                           students, and I contribute to open source. I'm currently after senior backend / platform
+                           roles — English C2, German B2, conversational Japanese.</p>
                     </div>
                 </div>
             </div>
