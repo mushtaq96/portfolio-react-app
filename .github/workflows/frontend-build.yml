@@ -1,0 +1,45 @@
+name: frontend-build
+
+# Build check only. Deploy stays in deploy-to-github-pages.yml (main only).
+on:
+  push:
+    branches: ["fix/**", "feat/**"]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-build.yml"
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      # Same as the deploy workflow: warnings do not fail the build, compile errors do.
+      CI: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      # yarn.lock is Yarn 1 format. A Yarn 2+ (Berry) install rewrites it and breaks
+      # `--frozen-lockfile`, so fail with a clear message if Yarn is not v1.
+      - name: Require Yarn 1
+        run: |
+          v="$(yarn --version)"
+          echo "yarn $v"
+          case "$v" in 1.*) ;; *) echo "Expected Yarn 1.x, got $v" && exit 1 ;; esac
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
