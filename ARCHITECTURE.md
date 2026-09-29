@@ -1,4 +1,4 @@
-# Architecture
+# Architecturee
 
 This document describes what the system **is** today, not an aspirational
 version of it. Known gaps are called out inline and collected at the end.
