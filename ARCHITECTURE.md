@@ -55,11 +55,15 @@ FastAPI app (`main.py`). Responsibilities:
    `/api/chat`.
 2. **Embedding.** Calls the Embedding API's `/embed` if `EMBEDDING_API_URL` is
    set; otherwise falls back to ChromaDB's in-process embedding function.
-3. **Retrieval.** `chroma_collection.query(..., n_results=3)`.
-4. **Prompt assembly.** `prompts.py` builds a grounded, language-constrained
-   instruction + retrieved context + question.
-5. **Generation.** Groq `chat.completions`, `llama-3.1-8b-instant`,
-   `max_tokens=200`, non-streaming.
+3. **Retrieval.** `chroma_collection.query(..., n_results=3)`, run in a worker
+   thread so it does not block the event loop. A short follow-up ("and
+   Kubernetes?") is retrieved together with the previous user question.
+4. **Prompt assembly.** A system message (`prompts.py` instruction + language
+   constraint + retrieved context), then the last 6 conversation turns from
+   `history`, then the question. UI-only messages (welcome, error bubbles) are
+   dropped.
+5. **Generation.** Groq `chat.completions` (in a worker thread),
+   `llama-3.1-8b-instant`, `max_tokens=200`, non-streaming.
 6. **Health.** `GET /` and `GET /health`.
 7. **Indexing (guarded).** `POST /api/index-documents` exists only when
    `ALLOW_INDEXING=true`, to prevent accidental re-index in production.
@@ -88,8 +92,10 @@ Separate FastAPI service whose only job is `POST /embed → vectors`.
 4. `prompts.py` selects a base instruction (general vs. "value" question),
    applies a language constraint, and assembles the final prompt.
 5. Groq generates the answer; the handler returns `{response, context}`.
-6. Errors at any external hop (embedding, Groq) return a 200 with a friendly
-   message and the error string in `context` — see Known Limitations.
+6. Failures map to real status codes: 502 when embedding, vector search or the
+   LLM fails; 503 when the knowledge base or LLM client did not load; 429 from
+   the rate limiter; 422 for invalid input (empty or over-long message, unknown
+   language). Error details are logged, never returned to the caller.
 
 ## 4. Deployment topology
 
@@ -117,20 +123,25 @@ property of the free tier, not the code.
 ## 6. Known limitations (architectural)
 
 1. **Unauthenticated LLM proxy.** `/api/chat` is open and `CORS` is `*`. The only
-   guard is an in-memory IP rate limiter that (a) resets on restart, (b) is not
-   shared across instances, and (c) behind Render's proxy sees the proxy IP, not
-   the client. It therefore does not reliably do what it claims.
-2. **Conversation history is accepted but unused.** The system is single-turn
-   despite the plumbing existing end to end.
-3. **Errors are masked as 200s.** External failures return HTTP 200 with an error
-   embedded in `context`. This simplifies the frontend but breaks HTTP semantics
-   and observability.
-4. **Two failure-prone external hops per request** (embedding service + Groq),
+   guard is an in-memory rate limiter (5 requests/hour per client IP) that resets
+   on restart and is not shared across instances. It reads the client IP from
+   `X-Forwarded-For`, counted from the right by `TRUSTED_PROXY_COUNT` (default 1).
+   **That value has not been verified against Render's real proxy chain**; if it
+   is wrong, clients share a bucket or the limit is bypassable.
+2. **Two failure-prone external hops per request** (embedding service + Groq),
    each on the critical path, with no caching of full answers.
-5. **State that pretends to be shared isn't.** The rate-limit map is per-process;
+3. **State that pretends to be shared isn't.** The rate-limit map is per-process;
    with more than one instance the limit is effectively multiplied.
-6. **Deprecated framework surface.** `@app.on_event` (use lifespan) and CRA (use
-   Vite) are both end-of-life patterns.
+4. **Basic multi-turn.** Recent turns are sent to the LLM, but there is no
+   summarisation or LLM-based query rewriting.
+5. **Deprecated frontend tooling.** CRA is end-of-life (use Vite).
+
+Fixed since the first version of this document: conversation history is now used;
+upstream failures return 502/503 instead of 200 with an embedded error string;
+the limiter returns a real 429 (it used to surface as a 500) and keys on the
+client IP rather than the proxy's; blocking calls no longer run on the event
+loop; startup uses a lifespan handler; raw retrieved chunks are no longer returned
+to callers unless `DEBUG_CONTEXT=true`.
 
 ## 7. What this architecture is appropriate for
 
